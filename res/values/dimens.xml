@@ -4,4 +4,10 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="TITLE_HEIGHT">52dp</dimen>
+    <dimen name="TITLE_PADDING">2dp</dimen>
+    <dimen name="BODY_PADDING">16dp</dimen>
+    
+    <dimen name="CAPTION_FONTSIZE">20sp</dimen>
+    
 </resources>

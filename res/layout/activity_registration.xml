@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" >
-
+    tools:context=".RegistrationActivity" >
+    
 	<RelativeLayout
 	    android:id="@+id/layoutTitle"
 	    android:layout_width="match_parent"
@@ -18,16 +18,24 @@
 	        android:layout_centerHorizontal="true" />
 	</RelativeLayout>
 	
-	<RelativeLayout
+	<LinearLayout
 	    android:id="@+id/layoutBody"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
+	    android:orientation="vertical"
 	    android:layout_below="@+id/layoutTitle"
 	    android:padding="@dimen/BODY_PADDING" >
-	    
-	    
-	    
-	</RelativeLayout>
 
-
+	    <TextView
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:textSize="@dimen/CAPTION_FONTSIZE"
+	        android:textColor="@color/BLACK"
+	        android:text="@string/MSG_SELECT_REGISTRATION_TYPE" />
+		<Spinner
+		    android:id="@+id/regType"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content" />   
+	    
+	</LinearLayout>
 </RelativeLayout>

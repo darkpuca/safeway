@@ -1,14 +1,7 @@
 package com.snid.safeway;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Vector;
-
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap.CompressFormat;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;

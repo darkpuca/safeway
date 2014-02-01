@@ -9,14 +9,12 @@
         android:targetSdkVersion="19" />
 
     <permission android:name="com.snid.safeway.permission.C2D_MESSAGE" />
+
     <uses-permission android:name="com.snid.safeway.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.C2D_MESSAGE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    
-    
-    
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name="com.snid.safeway.MainApplication"
@@ -33,17 +31,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <receiver 
-            android:name=".GcmBroadcastReceiver" 
-            android:permission="com.google.android.c2dm.permission.SEND">
+
+        <receiver
+            android:name="com.snid.safeway.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
-				<!-- Receives the actual messages. -->
+
+                <!-- Receives the actual messages. -->
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="com.snid.safeway" />
             </intent-filter>
         </receiver>
-        <service android:name=".GcmIntentService"></service>
+
+        <service android:name="com.snid.safeway.GcmIntentService" >
+        </service>
+
+        <activity
+            android:name="com.snid.safeway.RegistrationActivity"
+            android:label="@string/title_activity_registration" >
+        </activity>
     </application>
 
 </manifest>
