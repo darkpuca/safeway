@@ -1,33 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SAFEWAY</string>
+    <string name="app_name">safeway</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">safeway</string>
     <string name="title_activity_registration">RegistrationActivity</string>
+    <string name="send">전송</string>
+    <string name="confirm">확인</string>
+    <string name="cellphone_number">휴대전화 번호</string>
+    <string name="certification_number">인증 번호</string>
+    <string name="clear_messages">전체 메세지 삭제</string>
+    <string name="clear_histories">전체 기록 삭제</string>
+    <string name="msg_select_registration_type">인증유형을 선택해 주십시요.</string>
+    <string name="msg_insert_cellphone_number">휴대전화 번호를 입력해 주십시요.</string>
+    <string name="msg_insert_certification_number">인증 번호를 입력해 주십시요.</string>
 
-    <string name="MSG_SELECT_REGISTRATION_TYPE">인증유형을 선택해 주십시요.</string>
-    <string name="MSG_INSERT_CELLPHONE_NUMBER">휴대전화 번호를 입력해 주십시요.</string>
-
-    <string-array name="REGISTRATION_TYPES">
+    <string-array name="registration_types">
         <item>학부모</item>
         <item>학생</item>
         <item>선생님</item>
-    </string-array>    
-    
-    <color name="BLACK">#000000</color>
-    <color name="WHITE">#FFFFFF</color>
-    <color name="DARK_GRAY">#464646</color>
-    <color name="GRAY">#898989</color>
-    <color name="LIGHT_GRAY">#d7d7d7</color>
-    <color name="LIGHT_GREEN">#55bc75</color>
-    <color name="RED">#ff0000</color>
-    <color name="YELLOW">#ffff00</color>
-    <color name="CYON">#00ffff</color>
-    <color name="MAGENTA">#ff00ff</color>
-    <color name="ORANGE">#f7941d</color>
-    <color name="GREEN">#00a651</color>
-    <color name="LIGHT_RED">#e86843</color>
-    
-    
+    </string-array>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="dark_gray">#464646</color>
+    <color name="gray">#898989</color>
+    <color name="light_gray">#d7d7d7</color>
+    <color name="light_green">#55bc75</color>
+    <color name="red">#ff0000</color>
+    <color name="yellow">#ffff00</color>
+    <color name="cyon">#00ffff</color>
+    <color name="magenta">#ff00ff</color>
+    <color name="orange">#f7941d</color>
+    <color name="green">#00a651</color>
+    <color name="light_red">#e86843</color>
+
+    <string name="title_activity_messages">MessagesActivity</string>
+    <string name="title_activity_history">HistoryActivity</string>
+    <string name="title_activity_notices">NoticesActivity</string>
+    <string name="title_activity_notice_detail">NoticeDetailActivity</string>
+
 </resources>

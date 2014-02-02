@@ -51,6 +51,22 @@
             android:name="com.snid.safeway.RegistrationActivity"
             android:label="@string/title_activity_registration" >
         </activity>
+        <activity
+            android:name="com.snid.safeway.MessagesActivity"
+            android:label="@string/title_activity_messages" >
+        </activity>
+        <activity
+            android:name="com.snid.safeway.HistoriesActivity"
+            android:label="@string/title_activity_history" >
+        </activity>
+        <activity
+            android:name="com.snid.safeway.NoticesActivity"
+            android:label="@string/title_activity_notices" >
+        </activity>
+        <activity
+            android:name="com.snid.safeway.NoticeDetailActivity"
+            android:label="@string/title_activity_notice_detail" >
+        </activity>
     </application>
 
 </manifest>

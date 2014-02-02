@@ -4,10 +4,14 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="TITLE_HEIGHT">52dp</dimen>
-    <dimen name="TITLE_PADDING">2dp</dimen>
-    <dimen name="BODY_PADDING">16dp</dimen>
+    <dimen name="title_height">52dp</dimen>
+    <dimen name="title_padding">2dp</dimen>
+    <dimen name="body_padding">16dp</dimen>
+    <dimen name="item_margin">4dp</dimen>
+    <dimen name="section_margin">12dp</dimen>
+    <dimen name="input_height">44dp</dimen>
     
-    <dimen name="CAPTION_FONTSIZE">20sp</dimen>
+    <dimen name="caption_fontsize">20sp</dimen>
+    <dimen name="button_fontsize">14sp</dimen>
     
 </resources>

@@ -1,9 +1,11 @@
 package com.snid.safeway;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.view.Menu;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 public class MainActivity extends Activity
 {
@@ -12,17 +14,60 @@ public class MainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		Intent i = new Intent(this, RegistrationActivity.class);
-		startActivity(i);
-		
+
+		// test registration activity
+		Button registrationButton = (Button)findViewById(R.id.registration_button);
+		registrationButton.setOnClickListener(new OnClickListener()
+		{			
+			@Override
+			public void onClick(View v)
+			{
+				Intent i = new Intent(MainActivity.this, RegistrationActivity.class);
+				startActivity(i);
+			}
+		});
+
+		// test messages activity
+		Button messagesButton = (Button)findViewById(R.id.messages_button);
+		messagesButton.setOnClickListener(new OnClickListener()
+		{			
+			@Override
+			public void onClick(View v)
+			{
+				Intent i = new Intent(MainActivity.this, MessagesActivity.class);
+				startActivity(i);
+			}
+		});
+
+		// test histories activity
+		Button historiesButton = (Button)findViewById(R.id.histories_button);
+		historiesButton.setOnClickListener(new OnClickListener()
+		{			
+			@Override
+			public void onClick(View v)
+			{
+				Intent i = new Intent(MainActivity.this, HistoriesActivity.class);
+				startActivity(i);
+			}
+		});
+
+		// test notices activity
+		Button noticesButton = (Button)findViewById(R.id.notices_button);
+		noticesButton.setOnClickListener(new OnClickListener()
+		{			
+			@Override
+			public void onClick(View v)
+			{
+				Intent i = new Intent(MainActivity.this, NoticesActivity.class);
+				startActivity(i);
+			}
+		});
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
 
+		super.onActivityResult(requestCode, resultCode, data);
+	}
 }
