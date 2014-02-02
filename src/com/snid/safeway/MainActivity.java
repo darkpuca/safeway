@@ -62,6 +62,18 @@ public class MainActivity extends Activity
 				startActivity(i);
 			}
 		});
+		
+		// parent main activity
+		Button parentMainButton = (Button)findViewById(R.id.parents_main_button);
+		parentMainButton.setOnClickListener(new OnClickListener()
+		{			
+			@Override
+			public void onClick(View v)
+			{
+				Intent i = new Intent(MainActivity.this, ParentsMainActivity.class);
+				startActivity(i);
+			}
+		});
 	}
 
 	@Override

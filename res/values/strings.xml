@@ -39,5 +39,6 @@
     <string name="title_activity_history">HistoryActivity</string>
     <string name="title_activity_notices">NoticesActivity</string>
     <string name="title_activity_notice_detail">NoticeDetailActivity</string>
+    <string name="title_activity_parents_main">ParentsMainActivity</string>
 
 </resources>

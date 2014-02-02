@@ -67,6 +67,10 @@
             android:name="com.snid.safeway.NoticeDetailActivity"
             android:label="@string/title_activity_notice_detail" >
         </activity>
+        <activity
+            android:name="com.snid.safeway.ParentsMainActivity"
+            android:label="@string/title_activity_parents_main" >
+        </activity>
     </application>
 
 </manifest>

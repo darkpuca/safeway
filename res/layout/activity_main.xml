@@ -50,7 +50,12 @@
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:text="notice" />
-		    
+		    <Button
+		        android:id="@+id/parents_main_button"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:text="parents main" />
+		    		    
 		</LinearLayout>
 	</ScrollView>
 </RelativeLayout>
