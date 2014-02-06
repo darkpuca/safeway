@@ -8,20 +8,27 @@
         android:minSdkVersion="10"
         android:targetSdkVersion="19" />
 
-    <permission android:name="com.snid.safeway.permission.C2D_MESSAGE" />
-
-    <uses-permission android:name="com.snid.safeway.permission.C2D_MESSAGE" />
-    <uses-permission android:name="com.google.android.c2dm.permission.C2D_MESSAGE" />
+	<permission 
+	    android:name="com.example.gcm.permission.C2D_MESSAGE" 
+	    android:protectionLevel="signature" />
+    
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="com.snid.safeway.permission.C2D_MESSAGE" />
+    
     <application
         android:name="com.snid.safeway.MainApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
+        <meta-data 
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        
         <activity
             android:name="com.snid.safeway.MainActivity"
             android:label="@string/app_name" >
@@ -33,19 +40,15 @@
         </activity>
 
         <receiver
-            android:name="com.snid.safeway.GcmBroadcastReceiver"
+            android:name=".GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
-
-                <!-- Receives the actual messages. -->
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
                 <category android:name="com.snid.safeway" />
             </intent-filter>
         </receiver>
 
-        <service android:name="com.snid.safeway.GcmIntentService" >
-        </service>
+        <service android:name=".GcmIntentService" />
 
         <activity
             android:name="com.snid.safeway.RegistrationActivity"
