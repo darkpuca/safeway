@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -29,12 +30,15 @@ public class MainActivity extends Activity
     private Context context;
 
     private String regid;
+    private EditText deviceIdField;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		this.context = this;
 		
 	    // Check device for Play Services APK.
 	    if (false == checkPlayServices())
@@ -49,9 +53,12 @@ public class MainActivity extends Activity
             this.regid = getRegistrationId(context);
 
             if (this.regid.isEmpty())
-            {
                 registerInBackground();
-            }
+
+            // show device registration id
+            Toast.makeText(context, this.regid, Toast.LENGTH_LONG).show();
+            deviceIdField = (EditText)findViewById(R.id.deviceIdField);
+            deviceIdField.setText(this.regid);
 	    }
 
 		// test registration activity
@@ -184,6 +191,7 @@ public class MainActivity extends Activity
 	        Log.i("GCM", "App version changed.");
 	        return "";
 	    }
+
 	    return registrationId;
 	}
 
@@ -204,8 +212,7 @@ public class MainActivity extends Activity
 	{
 	    try
 	    {
-	        PackageInfo packageInfo = context.getPackageManager()
-	                .getPackageInfo(context.getPackageName(), 0);
+	        PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 	        return packageInfo.versionCode;
 	    }
 	    catch (NameNotFoundException e)
@@ -298,7 +305,7 @@ public class MainActivity extends Activity
         protected void onPostExecute(String msg)
         {
         	Log.i("GCM", msg);
-//        	Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+        	Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
         }
 	}
 }

@@ -55,7 +55,12 @@
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:text="parents main" />
-		    		    		    
+
+		    <EditText
+		        android:id="@+id/deviceIdField"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:inputType="none" />
 		</LinearLayout>
 	</ScrollView>
 </RelativeLayout>
