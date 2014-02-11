@@ -319,6 +319,7 @@ containing a value of this type.
         public static final int certification_number=0x7f060021;
         public static final int clear_histories=0x7f060023;
         public static final int clear_messages=0x7f060022;
+        public static final int close=0x7f060025;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
         can enable it [CHAR LIMIT=40] 
@@ -392,15 +393,20 @@ containing a value of this type.
         public static final int common_signin_button_text_long=0x7f060013;
         public static final int confirm=0x7f06001f;
         public static final int hello_world=0x7f06001c;
-        public static final int msg_insert_cellphone_number=0x7f060025;
-        public static final int msg_insert_certification_number=0x7f060026;
-        public static final int msg_select_registration_type=0x7f060024;
+        public static final int information=0x7f060024;
+        public static final int msg_empty_mobile_number=0x7f06002a;
+        public static final int msg_gps_setting_confirm=0x7f060029;
+        public static final int msg_insert_cellphone_number=0x7f060027;
+        public static final int msg_insert_certification_number=0x7f060028;
+        public static final int msg_request_fail=0x7f06002c;
+        public static final int msg_select_registration_type=0x7f060026;
+        public static final int msg_send_request=0x7f06002b;
         public static final int send=0x7f06001e;
-        public static final int title_activity_history=0x7f060028;
-        public static final int title_activity_messages=0x7f060027;
-        public static final int title_activity_notice_detail=0x7f06002a;
-        public static final int title_activity_notices=0x7f060029;
-        public static final int title_activity_parents_main=0x7f06002b;
+        public static final int title_activity_history=0x7f06002e;
+        public static final int title_activity_messages=0x7f06002d;
+        public static final int title_activity_notice_detail=0x7f060030;
+        public static final int title_activity_notices=0x7f06002f;
+        public static final int title_activity_parents_main=0x7f060031;
         public static final int title_activity_registration=0x7f06001d;
     }
     public static final class style {

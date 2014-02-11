@@ -11,10 +11,16 @@
     <string name="certification_number">인증 번호</string>
     <string name="clear_messages">전체 메세지 삭제</string>
     <string name="clear_histories">전체 기록 삭제</string>
+    <string name="information">알림</string>
+    <string name="close">닫기</string>
     <string name="msg_select_registration_type">인증유형을 선택해 주십시요.</string>
     <string name="msg_insert_cellphone_number">휴대전화 번호를 입력해 주십시요.</string>
     <string name="msg_insert_certification_number">인증 번호를 입력해 주십시요.</string>
-
+    <string name="msg_gps_setting_confirm">GPS 위치 서비스에 접근할 수 없습니다. GPS 설정을 변경해 주십시오.</string>
+    <string name="msg_empty_mobile_number">휴대전화 번호를 입력해 주십시요.</string>
+	<string name="msg_send_request">서버에 정보를 요청중입니다.</string>
+	<string name="msg_request_fail">정보 요청이 실패했습니다.</string>
+	
     <string-array name="registration_types">
         <item>학부모</item>
         <item>학생</item>
