@@ -18,9 +18,13 @@
     <string name="msg_insert_certification_number">인증 번호를 입력해 주십시요.</string>
     <string name="msg_gps_setting_confirm">GPS 위치 서비스에 접근할 수 없습니다. GPS 설정을 변경해 주십시오.</string>
     <string name="msg_empty_mobile_number">휴대전화 번호를 입력해 주십시요.</string>
+    <string name="msg_empty_auth_number">인증번호를 입력해 주십시요.</string>
 	<string name="msg_send_request">서버에 정보를 요청중입니다.</string>
+	<string name="msg_request_success">정보 요청이 완료되었습니다.</string>
 	<string name="msg_request_fail">정보 요청이 실패했습니다.</string>
-	
+	<string name="msg_auth_success">인증이 완료되었습니다.</string>
+	<string name="msg_auth_fail">인증이 실패했습니다. 인증번호를 확인해 주십시요.</string>
+			
     <string-array name="registration_types">
         <item>학부모</item>
         <item>학생</item>

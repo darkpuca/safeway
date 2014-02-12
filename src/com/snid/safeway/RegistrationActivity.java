@@ -19,6 +19,7 @@ implements OnClickListener, RequestAdapterListener
 	private RequestAdapter req;
 	private int req_type = 0;
 	
+	private EditText sms_edit, auth_edit;
 	private Button sms_button, auth_button;
 	private ProgressDialog prog;
 	
@@ -46,11 +47,16 @@ implements OnClickListener, RequestAdapterListener
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
 		
+		sms_edit = (EditText)findViewById(R.id.phoneNumEdit);
+		auth_edit = (EditText)findViewById(R.id.certNumEdit);
 		sms_button = (Button)findViewById(R.id.sendButton);
 		auth_button = (Button)findViewById(R.id.certButton);
 		
 		sms_button.setOnClickListener(this);
 		auth_button.setOnClickListener(this);
+		
+		auth_edit.setEnabled(false);
+		auth_button.setEnabled(false);
 	}
 
 	@Override
@@ -58,8 +64,7 @@ implements OnClickListener, RequestAdapterListener
 	{
 		if (view.equals(sms_button))
 		{
-			EditText phoneNumberEdit = (EditText)findViewById(R.id.phoneNumEdit);
-			String number = phoneNumberEdit.getText().toString();
+			String number = sms_edit.getText().toString();
 			
 			if (0 == number.length())
 			{
@@ -75,7 +80,25 @@ implements OnClickListener, RequestAdapterListener
 		}
 		else if (view.equals(auth_button))
 		{
+			String number = sms_edit.getText().toString();
+			String authNumber = auth_edit.getText().toString();
 			
+			if (0 == number.length())
+			{
+				Utils.GetDefaultTool().ShowMessageDialog(this, R.string.msg_empty_mobile_number);
+				return;
+			}
+
+			if (0 == authNumber.length())
+			{
+				Utils.GetDefaultTool().ShowMessageDialog(this, R.string.msg_empty_auth_number);
+				return;
+			}
+			
+			if (false == prog.isShowing()) prog.show();
+			
+			req_type = REQ_CHECK_AUTH;
+			req.SendAuthNumber(this, number, authNumber);
 		}
 	}
 
@@ -84,25 +107,35 @@ implements OnClickListener, RequestAdapterListener
 	{
 		if (prog.isShowing()) prog.dismiss();
 		
-		if (0 > code)
-		{
-			Utils.GetDefaultTool().ShowMessageDialog(this, R.string.msg_request_fail);
-			return;
-		}
-		
 		if (REQ_SEND_SMS == req_type)
 		{
 			if (message.equalsIgnoreCase("done"))
 			{
-				// sms send ok
+				sms_edit.setEnabled(false);
+				sms_button.setEnabled(false);
+				auth_edit.setEnabled(true);
+				auth_button.setEnabled(true);
+				
+				auth_edit.requestFocus();
 			}
 			else
 			{
-				// sms send fail
+				Utils.GetDefaultTool().ShowMessageDialog(this, R.string.msg_empty_auth_number);
 			}
 		}
 		else if (REQ_CHECK_AUTH == req_type)
 		{
+			// test return value;
+			code = 0;
+			
+			if (Globals.RESPONSE_OK == code)
+			{
+				Utils.GetDefaultTool().ShowMessageDialog(this, R.string.msg_auth_success);
+			}
+			else if (Globals.RESPONSE_FAIL == code)
+			{
+				Utils.GetDefaultTool().ShowMessageDialog(this, R.string.msg_auth_fail);
+			}
 			
 		}
 	}

@@ -83,4 +83,28 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 		reqQueue.add(req);
 	}
 
+	public void SendAuthNumber(RequestAdapterListener listener, final String phone_number, final String auth_number)
+	{
+		RequestQueue reqQueue = RequestManager.getRequestQueue();
+		if (null == reqQueue) return;
+		
+		this.listener = listener;
+
+		String urlString = Globals.URL_NUMBER_REGISTRATION_CHECK;
+
+		StringRequest req = new StringRequest(Method.POST, urlString, this, this)
+		{
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError
+			{
+				Map<String, String>  params = new HashMap<String, String>();  
+	            params.put("telno", phone_number);
+	            params.put("authno", auth_number);
+				return params;
+			}			
+		};
+		
+		reqQueue.add(req);
+	}
+
 }
