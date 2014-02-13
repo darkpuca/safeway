@@ -13,18 +13,24 @@
     <string name="clear_histories">전체 기록 삭제</string>
     <string name="information">알림</string>
     <string name="close">닫기</string>
+	<string name="msg_play_service_disable">플레이 서비스에 접근할 수 없습니다. 앱을 종료합니다.</string>
     <string name="msg_select_registration_type">인증유형을 선택해 주십시요.</string>
     <string name="msg_insert_cellphone_number">휴대전화 번호를 입력해 주십시요.</string>
     <string name="msg_insert_certification_number">인증 번호를 입력해 주십시요.</string>
     <string name="msg_gps_setting_confirm">GPS 위치 서비스에 접근할 수 없습니다. GPS 설정을 변경해 주십시오.</string>
     <string name="msg_empty_mobile_number">휴대전화 번호를 입력해 주십시요.</string>
     <string name="msg_empty_auth_number">인증번호를 입력해 주십시요.</string>
+	<string name="msg_request_auth_number">인증번호를 요청하는 중입니다.</string>
+	<string name="msg_request_auth_check">인증번호를 확인하는 중입니다.</string>
+	<string name="msg_request_regist_device_id">푸시 서비스를 위한 기기 고유정보를 등록하는 중입니다.</string>
 	<string name="msg_send_request">서버에 정보를 요청중입니다.</string>
 	<string name="msg_request_success">정보 요청이 완료되었습니다.</string>
 	<string name="msg_request_fail">정보 요청이 실패했습니다.</string>
 	<string name="msg_auth_success">인증이 완료되었습니다.</string>
 	<string name="msg_auth_fail">인증이 실패했습니다. 인증번호를 확인해 주십시요.</string>
-			
+	<string name="msg_phone_authorize_fail">휴대전화번호 인증을 하지 못했습니다.</string>
+	<string name="msg_device_registration_fail">기기 고유정보를 등록하지 못했습니다.</string>
+				
     <string-array name="registration_types">
         <item>학부모</item>
         <item>학생</item>

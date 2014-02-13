@@ -16,8 +16,14 @@ public class Globals
 	
 	
 	public static final String EXTRA_MESSAGE = "message";
+	public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	
     public static final String PROPERTY_REG_ID = "registration_id";
     public static final String PROPERTY_APP_VERSION = "appVersion";
-	public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	public static final String PROPERTY_AUTHORIZED_NUMBER = "authorized_number";
+	public static final String PROPERTY_REGISTED_DEVICE = "registed_device";
+	public static final String PROPERTY_PHONE_NUMBER = "phone_number";
+	
+	public static final int INTENT_REQUEST_AUTH_NUMBER = 1000;
 
 }

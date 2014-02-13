@@ -21,16 +21,19 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.snid.safeway.request.RequestAdapter;
+import com.snid.safeway.request.RequestAdapter.RequestAdapterListener;
 
-public class MainActivity extends Activity
+public class MainActivity extends BaseActivity implements RequestAdapterListener
 {
 	private GoogleCloudMessaging gcm;
     private AtomicInteger msgId = new AtomicInteger();
     private SharedPreferences prefs;
     private Context context;
 
-    private String regid;
-    private EditText deviceIdField;
+	private static final int REQ_DEVICE_REGISTRATION = 100;
+
+    private String phone_number, reg_id;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -39,87 +42,33 @@ public class MainActivity extends Activity
 		setContentView(R.layout.activity_main);
 		
 		this.context = this;
+	    this.prefs = getPreferences(context);
+
 		
 	    // Check device for Play Services APK.
 	    if (false == checkPlayServices())
 	    {
 	        // If this check succeeds, proceed with normal processing.
 	        // Otherwise, prompt user to get valid Play Services APK.
-	    	Toast.makeText(this, "Invalid PlayServices", Toast.LENGTH_LONG).show();
+//	    	Toast.makeText(this, "Invalid PlayServices", Toast.LENGTH_LONG).show();
+	    	Utils.GetDefaultTool().ShowFinishDialog(context, R.string.msg_play_service_disable);
 	    }
 	    else
 	    {
 	    	this.gcm = GoogleCloudMessaging.getInstance(this);
-            this.regid = getRegistrationId(context);
+            this.reg_id = getRegistrationId(context);
 
-            if (this.regid.isEmpty())
+            if (this.reg_id.isEmpty())
                 registerInBackground();
 
             // show device registration id
-            Toast.makeText(context, this.regid, Toast.LENGTH_LONG).show();
-            deviceIdField = (EditText)findViewById(R.id.deviceIdField);
-            deviceIdField.setText(this.regid);
+            Toast.makeText(context, this.reg_id, Toast.LENGTH_LONG).show();
+            
+            if (authorizeProc() && registrationProc())
+            {
+            	showMessageActivity();
+            }
 	    }
-
-		// test registration activity
-		Button registrationButton = (Button)findViewById(R.id.registration_button);
-		registrationButton.setOnClickListener(new OnClickListener()
-		{			
-			@Override
-			public void onClick(View v)
-			{
-				Intent i = new Intent(MainActivity.this, RegistrationActivity.class);
-				startActivity(i);
-			}
-		});
-
-		// test messages activity
-		Button messagesButton = (Button)findViewById(R.id.messages_button);
-		messagesButton.setOnClickListener(new OnClickListener()
-		{			
-			@Override
-			public void onClick(View v)
-			{
-				Intent i = new Intent(MainActivity.this, MessagesActivity.class);
-				startActivity(i);
-			}
-		});
-
-		// test histories activity
-		Button historiesButton = (Button)findViewById(R.id.histories_button);
-		historiesButton.setOnClickListener(new OnClickListener()
-		{			
-			@Override
-			public void onClick(View v)
-			{
-				Intent i = new Intent(MainActivity.this, HistoriesActivity.class);
-				startActivity(i);
-			}
-		});
-
-		// test notices activity
-		Button noticesButton = (Button)findViewById(R.id.notices_button);
-		noticesButton.setOnClickListener(new OnClickListener()
-		{			
-			@Override
-			public void onClick(View v)
-			{
-				Intent i = new Intent(MainActivity.this, NoticesActivity.class);
-				startActivity(i);
-			}
-		});
-		
-		// parent main activity
-		Button parentMainButton = (Button)findViewById(R.id.parents_main_button);
-		parentMainButton.setOnClickListener(new OnClickListener()
-		{			
-			@Override
-			public void onClick(View v)
-			{
-				Intent i = new Intent(MainActivity.this, ParentsMainActivity.class);
-				startActivity(i);
-			}
-		});
 	}
 
 	@Override
@@ -134,9 +83,89 @@ public class MainActivity extends Activity
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		if (Globals.INTENT_REQUEST_AUTH_NUMBER == requestCode)
+		{
+			if (RESULT_OK == resultCode)
+			{
+				this.phone_number = data.getExtras().getString(Globals.PROPERTY_PHONE_NUMBER);
+				storePhoneNumber(this, this.phone_number);
+				
+				if (registrationProc())
+				{
+					showMessageActivity();
+				}
+			}
+			else
+			{
+				Utils.GetDefaultTool().ShowFinishDialog(context, R.string.msg_phone_authorize_fail);
+			}
+		}
 
 		super.onActivityResult(requestCode, resultCode, data);
 	}
+	
+	private boolean authorizeProc()
+	{
+	    boolean is_authorized = prefs.getBoolean(Globals.PROPERTY_AUTHORIZED_NUMBER, false);
+	    
+	    if (false == is_authorized)
+	    {
+	    	// 전화번호 인증이 되지 않았을 경우 인증 화면 전환.
+	    	Intent i = new Intent(this, AuthorizeActivity.class);
+	    	startActivityForResult(i, Globals.INTENT_REQUEST_AUTH_NUMBER);
+	    	return false;
+	    }
+
+	    return true;
+	}
+	
+	private boolean registrationProc()
+	{
+		boolean is_registed = prefs.getBoolean(Globals.PROPERTY_REGISTED_DEVICE, false);
+
+		if (false == is_registed)
+		{
+			String phone_number = prefs.getString(Globals.PROPERTY_PHONE_NUMBER, "");
+			
+			if (false == prog.isShowing()) prog.show();
+			
+			setProgressMessage(R.string.msg_request_regist_device_id);
+			req_type = REQ_DEVICE_REGISTRATION;
+			req.SendDeviceRegistrationId(this, phone_number, reg_id);
+		}
+		
+		return true;
+	}
+	
+	private void storePhoneNumber(Context context, String phone_number)
+	{
+	    final SharedPreferences prefs = getPreferences(context);
+	    int appVersion = getAppVersion(context);
+	    Log.i("safeway", "Saving regId on app version " + appVersion);
+	    
+	    SharedPreferences.Editor editor = prefs.edit();
+	    editor.putString(Globals.PROPERTY_PHONE_NUMBER, phone_number);
+	    editor.putBoolean(Globals.PROPERTY_AUTHORIZED_NUMBER, true)
+;	    editor.commit();
+	}
+
+	private void storeDeviceRegisted(Context context, boolean registed)
+	{
+	    final SharedPreferences prefs = getPreferences(context);
+	    int appVersion = getAppVersion(context);
+	    Log.i("safeway", "Saving regId on app version " + appVersion);
+	    
+	    SharedPreferences.Editor editor = prefs.edit();
+	    editor.putBoolean(Globals.PROPERTY_REGISTED_DEVICE, registed)
+;	    editor.commit();
+	}
+
+	private void showMessageActivity()
+	{
+		Intent i = new Intent(this, MessagesActivity.class);
+		startActivity(i);
+	}
+
 	
 	/**
 	 * Check the device to make sure it has the Google Play Services APK. If
@@ -165,7 +194,7 @@ public class MainActivity extends Activity
 	
 	/**
 	 * Gets the current registration ID for application on GCM service.
-	 * <p>
+	 * 
 	 * If result is empty, the app needs to register.
 	 *
 	 * @return registration ID, or empty string if there is no existing
@@ -173,7 +202,7 @@ public class MainActivity extends Activity
 	 */
 	private String getRegistrationId(Context context)
 	{
-	    final SharedPreferences prefs = getGCMPreferences(context);
+	    final SharedPreferences prefs = getPreferences(context);
 	    String registrationId = prefs.getString(Globals.PROPERTY_REG_ID, "");
 	    if (registrationId.isEmpty()) {
 	        Log.i("GCM", "Registration not found.");
@@ -198,7 +227,7 @@ public class MainActivity extends Activity
 	/**
 	 * @return Application's {@code SharedPreferences}.
 	 */
-	private SharedPreferences getGCMPreferences(Context context)
+	private SharedPreferences getPreferences(Context context)
 	{
 	    // This sample app persists the registration ID in shared preferences, but
 	    // how you store the regID in your app is up to you.
@@ -254,7 +283,7 @@ public class MainActivity extends Activity
 	 */
 	private void storeRegistrationId(Context context, String regId)
 	{
-	    final SharedPreferences prefs = getGCMPreferences(context);
+	    final SharedPreferences prefs = getPreferences(context);
 	    int appVersion = getAppVersion(context);
 	    Log.i("GCM", "Saving regId on app version " + appVersion);
 	    
@@ -276,8 +305,8 @@ public class MainActivity extends Activity
 					gcm = GoogleCloudMessaging.getInstance(context);
 				}
 	                
-				regid = gcm.register(Globals.GCM_SENDER_ID);
-				msg = "Device registered, registration ID=" + regid;
+				reg_id = gcm.register(Globals.GCM_SENDER_ID);
+				msg = "Device registered, registration ID=" + reg_id;
 
 				// You should send the registration ID to your server over HTTP,
 				// so it can use GCM/HTTP or CCS to send messages to your app.
@@ -290,7 +319,7 @@ public class MainActivity extends Activity
 				// message using the 'from' address in the message.
 
 				// Persist the regID - no need to register again.
-				storeRegistrationId(context, regid);
+				storeRegistrationId(context, reg_id);
 			}
 			catch (final IOException ex)
 			{
@@ -307,5 +336,29 @@ public class MainActivity extends Activity
         	Log.i("GCM", msg);
         	Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
         }
+	}
+
+	@Override
+	public void onFinishRequest(int code, String message, String reason)
+	{
+		if (prog.isShowing()) prog.dismiss();
+		
+		if (REQ_DEVICE_REGISTRATION == req_type)
+		{
+			// test value
+			code = 0;
+			
+			if (0 == code || 1 == code)
+			{
+				// 0: ok, 1: already
+				storeDeviceRegisted(context, true);
+				showMessageActivity();
+			}
+			else
+			{
+				// error
+				Utils.GetDefaultTool().ShowFinishDialog(context, R.string.msg_device_registration_fail);
+			}
+		}
 	}
 }

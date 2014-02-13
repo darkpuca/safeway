@@ -51,7 +51,7 @@
         <service android:name=".GcmIntentService" />
 
         <activity
-            android:name="com.snid.safeway.RegistrationActivity"
+            android:name="com.snid.safeway.AuthorizeActivity"
             android:label="@string/title_activity_registration" >
         </activity>
         <activity

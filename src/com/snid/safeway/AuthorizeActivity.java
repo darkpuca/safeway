@@ -1,7 +1,6 @@
 package com.snid.safeway;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,18 +9,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.snid.safeway.request.RequestAdapter;
 import com.snid.safeway.request.RequestAdapter.RequestAdapterListener;
 
-public class RegistrationActivity extends Activity
+public class AuthorizeActivity extends BaseActivity
 implements OnClickListener, RequestAdapterListener
 {
-	private RequestAdapter req;
-	private int req_type = 0;
-	
 	private EditText sms_edit, auth_edit;
 	private Button sms_button, auth_button;
-	private ProgressDialog prog;
+	
+	private String phone_number, auth_number;
 	
 	private static final int REQ_SEND_SMS	= 100;
 	private static final int REQ_CHECK_AUTH	= 101;
@@ -31,15 +27,6 @@ implements OnClickListener, RequestAdapterListener
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_registration);
-		
-		req = new RequestAdapter();
-		
-		// prepare progress dialog
-		prog = new ProgressDialog(this);
-		prog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		prog.setCancelable(false);
-		prog.setMessage(getResources().getString(R.string.msg_send_request));
-
 		
 		Spinner spinner = (Spinner) findViewById(R.id.regType);
 
@@ -64,9 +51,9 @@ implements OnClickListener, RequestAdapterListener
 	{
 		if (view.equals(sms_button))
 		{
-			String number = sms_edit.getText().toString();
+			this.phone_number = sms_edit.getText().toString();
 			
-			if (0 == number.length())
+			if (0 == phone_number.length())
 			{
 				Utils.GetDefaultTool().ShowMessageDialog(this, R.string.msg_empty_mobile_number);
 				return;
@@ -75,21 +62,15 @@ implements OnClickListener, RequestAdapterListener
 			if (false == prog.isShowing()) prog.show();
 			
 			req_type = REQ_SEND_SMS;
-			req.SendSMS(this, number);
+			setProgressMessage(R.string.msg_request_auth_number);
+			req.SendSMS(this, phone_number);
 
 		}
 		else if (view.equals(auth_button))
 		{
-			String number = sms_edit.getText().toString();
-			String authNumber = auth_edit.getText().toString();
+			auth_number = auth_edit.getText().toString();
 			
-			if (0 == number.length())
-			{
-				Utils.GetDefaultTool().ShowMessageDialog(this, R.string.msg_empty_mobile_number);
-				return;
-			}
-
-			if (0 == authNumber.length())
+			if (0 == auth_number.length())
 			{
 				Utils.GetDefaultTool().ShowMessageDialog(this, R.string.msg_empty_auth_number);
 				return;
@@ -97,8 +78,9 @@ implements OnClickListener, RequestAdapterListener
 			
 			if (false == prog.isShowing()) prog.show();
 			
+			setProgressMessage(R.string.msg_request_auth_check);
 			req_type = REQ_CHECK_AUTH;
-			req.SendAuthNumber(this, number, authNumber);
+			req.SendAuthNumber(this, phone_number, auth_number);
 		}
 	}
 
@@ -131,6 +113,10 @@ implements OnClickListener, RequestAdapterListener
 			if (Globals.RESPONSE_OK == code)
 			{
 				Utils.GetDefaultTool().ShowMessageDialog(this, R.string.msg_auth_success);
+				Intent i = new Intent();
+				i.putExtra(Globals.PROPERTY_PHONE_NUMBER, phone_number);
+				setResult(RESULT_OK, i);
+				finish();				
 			}
 			else if (Globals.RESPONSE_FAIL == code)
 			{

@@ -107,4 +107,28 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 		reqQueue.add(req);
 	}
 
+	public void SendDeviceRegistrationId(RequestAdapterListener listener, final String phone_number, final String registration_id)
+	{
+		RequestQueue reqQueue = RequestManager.getRequestQueue();
+		if (null == reqQueue) return;
+		
+		this.listener = listener;
+
+		String urlString = Globals.URL_DEVICE_REGISTRATION;
+
+		StringRequest req = new StringRequest(Method.POST, urlString, this, this)
+		{
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError
+			{
+				Map<String, String>  params = new HashMap<String, String>();  
+	            params.put("telno", phone_number);
+	            params.put("phoneid", registration_id);
+				return params;
+			}			
+		};
+		
+		reqQueue.add(req);
+	}
+
 }
