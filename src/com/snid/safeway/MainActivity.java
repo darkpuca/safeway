@@ -3,7 +3,6 @@ package com.snid.safeway;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,16 +11,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.snid.safeway.request.RequestAdapter;
 import com.snid.safeway.request.RequestAdapter.RequestAdapterListener;
 
 public class MainActivity extends BaseActivity implements RequestAdapterListener
@@ -64,9 +58,10 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
             // show device registration id
             Toast.makeText(context, this.reg_id, Toast.LENGTH_LONG).show();
             
-            if (authorizeProc() && registrationProc())
+            if (authorizeProc())
             {
-            	showMessageActivity();
+            	if (registrationProc())
+            		showMessageActivity();
             }
 	    }
 	}
