@@ -1,12 +1,15 @@
 package com.snid.safeway;
 
+import java.util.Date;
+
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -15,6 +18,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 public class GcmIntentService extends IntentService
 {
     public static final int NOTIFICATION_ID = 1;
+    public static int NOTIFICATION_COUNT;
     private NotificationManager mNotificationManager;
     NotificationCompat.Builder builder;
 
@@ -24,6 +28,7 @@ public class GcmIntentService extends IntentService
     public GcmIntentService()
     {
         super("GcmIntentService");
+        
     }
 
 	@Override
@@ -44,33 +49,60 @@ public class GcmIntentService extends IntentService
              */
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType))
             {
-                sendNotification("Send error: " + extras.toString());
+//                sendNotification("Send error: " + extras.toString());
+                Log.i(TAG, "MESSAGE_TYPE_SEND_ERROR: " + extras.toString());
             }
             else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType))
             {
-                sendNotification("Deleted messages on server: " + extras.toString());
-            // If it's a regular GCM message, do some work.
+//                sendNotification("Deleted messages on server: " + extras.toString());
+                Log.i(TAG, "MESSAGE_TYPE_DELETED: " + extras.toString());
             }
             else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType))
             {
-                // This loop represents the service doing some work.
-                for (int i = 0; i < 5; i++)
+                String message = extras.getString("message");
+                
+                Log.i(TAG, "Received: " + extras.toString());
+                
+                DBAdapter db = new DBAdapter(this);
+                
+                // add new message
+                db.open();
+                
+                Date now = new Date();
+                MessageItem new_msg = new MessageItem();
+                new_msg.setPhoneNumber(MainApplication.getPhoneNumber());
+                new_msg.setReceiveTime(now);
+                new_msg.setMessage(message);
+                
+                db.insertMessage(new_msg);
+                
+                db.close();
+
+                /*
+                 * 메세지 창이 떠있으면 리스트에 메세지 추가, 아니면 노티바에 표시
+                 */
+                if (MessagesActivity.IsActive)
                 {
-                    Log.i(TAG, "Working... " + (i + 1) + "/5 @ " + SystemClock.elapsedRealtime());
-                    try
+                	MessagesActivity.AddNewMessage(new_msg);
+                	
+                	try
+                	{
+//                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+//                        r.play();
+                		MediaPlayer mp = MediaPlayer.create(this, R.raw.snid_noti_sound);
+                		mp.start();
+                    } catch (Exception e)
                     {
-                        Thread.sleep(5000);
-                    }
-                    catch (InterruptedException e)
-                    {
+                    	
                     }
                 }
+                else
+                {
+                    sendNotification(message);
+                }
+
                 
-                Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
-                // Post notification of received message.
-                
-                sendNotification("Received: " + extras.toString());
-                Log.i(TAG, "Received: " + extras.toString());
             }
         }
         
@@ -83,21 +115,24 @@ public class GcmIntentService extends IntentService
     // a GCM message.
     private void sendNotification(String msg)
     {
-        mNotificationManager = (NotificationManager)
-                this.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
+		// show notification item
+		Intent notiIntent = new Intent(getApplicationContext(), MessagesActivity.class);
+		notiIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notiIntent, 0);
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-        .setSmallIcon(R.drawable.ic_launcher)
-        .setContentTitle("GCM Notification")
-        .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(msg))
-        .setContentText(msg);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+        mBuilder.setSmallIcon(R.drawable.safeway);
+        mBuilder.setContentTitle(getResources().getString(R.string.gcm_title));
+        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(msg));
+        mBuilder.setContentText(msg);
+        
+        //mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+        mBuilder.setSound(Uri.parse("android.resource://com.snid.safeway/raw/snid_noti_sound"));
 
         mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        mNotificationManager.notify(NOTIFICATION_ID + NOTIFICATION_COUNT++, mBuilder.build());
     }
 }

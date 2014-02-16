@@ -26,7 +26,7 @@ implements OnClickListener, RequestAdapterListener
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_registration);
+		setContentView(R.layout.activity_authorize);
 		
 		Spinner spinner = (Spinner) findViewById(R.id.regType);
 
@@ -44,6 +44,8 @@ implements OnClickListener, RequestAdapterListener
 		
 		auth_edit.setEnabled(false);
 		auth_button.setEnabled(false);
+		
+		sms_edit.requestFocus();
 	}
 
 	@Override
@@ -85,7 +87,7 @@ implements OnClickListener, RequestAdapterListener
 	}
 
 	@Override
-	public void onFinishRequest(int code, String message, String reason)
+	public void onFinishRequest(int code, String message, String reason, int user_type)
 	{
 		if (prog.isShowing()) prog.dismiss();
 		
@@ -107,14 +109,11 @@ implements OnClickListener, RequestAdapterListener
 		}
 		else if (REQ_CHECK_AUTH == req_type)
 		{
-			// test return value;
-			code = 0;
-			
 			if (Globals.RESPONSE_OK == code)
 			{
-				Utils.GetDefaultTool().ShowMessageDialog(this, R.string.msg_auth_success);
 				Intent i = new Intent();
 				i.putExtra(Globals.PROPERTY_PHONE_NUMBER, phone_number);
+				i.putExtra(Globals.PROPERTY_USER_TYPE, user_type);
 				setResult(RESULT_OK, i);
 				finish();				
 			}

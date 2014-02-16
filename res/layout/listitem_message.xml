@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/item_margin"
+    android:background="@drawable/list_tiled_bg" >
+    
+	<TextView
+	       android:id="@+id/date_label"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:layout_alignParentTop="true"
+	       android:layout_alignParentRight="true"
+	       android:textSize="@dimen/noti_time_fontsize"
+	       android:textColor="@color/gray" />
+	
+	<RelativeLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/date_label"
+	    android:layout_marginTop="4dp" >
+	    
+		<ImageView
+	           android:id="@+id/sender_image"
+	           android:layout_width="40dp"
+	           android:layout_height="40dp"
+	           android:layout_alignParentTop="true"
+	           android:layout_alignParentLeft="true"
+	           android:padding="1dp"
+	           android:scaleType="fitCenter"
+	           android:src="@drawable/title_logo"
+	           android:background="@drawable/list_icon_shape" />
+	       
+		<TextView
+	        android:id="@+id/message_label"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:minHeight="48dp"
+	        android:layout_toRightOf="@+id/sender_image"
+	        android:layout_marginLeft="2dp"
+			android:padding="6dp"	        
+	        android:textSize="@dimen/noti_message_fontsize"
+	        android:textColor="@color/black"
+	        android:background="@drawable/list_bg_frame" />
+	    
+	    
+	</RelativeLayout>
+
+</RelativeLayout>

@@ -9,17 +9,20 @@ import java.io.StringReader;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import com.snid.safeway.Globals;
+
 
 public class MyXMLParser
 {
 	public class snidResponse
 	{
 		public String Message, Reason;
-		public int Code;
+		public int Code, UserType;
 		
 		public snidResponse()
 		{
 			this.Code = -1;
+			this.UserType = 0;
 		}
 	}
 	
@@ -81,13 +84,33 @@ public class MyXMLParser
 				case XmlPullParser.START_TAG:
 					tagName = parser.getName();
 					if (tagName.equalsIgnoreCase("result"))
+					{
 						response = new snidResponse();
+					}
 					else if (tagName.equalsIgnoreCase("code"))
+					{
 						response.Code = Integer.parseInt(parser.nextText());
+					}
 					else if (tagName.equalsIgnoreCase("message"))
+					{
 						response.Message = parser.nextText();
+					}
 					else if (tagName.equalsIgnoreCase("reason"))
+					{
 						response.Reason = parser.nextText();
+					}
+					else if (tagName.equalsIgnoreCase("mtype"))
+					{
+						String retType = parser.nextText();
+						if (retType.equalsIgnoreCase("p"))
+							response.UserType = Globals.USERTYPE_PARENTS;
+						else if (retType.equalsIgnoreCase("s"))
+							response.UserType = Globals.USERTYPE_STUDENT;
+						else if (retType.equalsIgnoreCase("t"))
+							response.UserType = Globals.USERTYPE_TEACHER;
+						else if (retType.equalsIgnoreCase("at"))
+							response.UserType = Globals.USERTYPE_AFTER_TEACHER;
+					}
 					break;
 				case XmlPullParser.END_TAG:
 					tagName = parser.getName();

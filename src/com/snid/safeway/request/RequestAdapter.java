@@ -19,7 +19,7 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 	
 	public interface RequestAdapterListener
 	{
-		void onFinishRequest(int code, String message, String reason);
+		void onFinishRequest(int code, String message, String reason, int user_type);
 	}
 
 	@Override
@@ -38,6 +38,8 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 			return;
 		}
 		
+		System.out.println("responze xml: " + xml);
+		
 		MyXMLParser parser = new MyXMLParser(xml);
 		snidResponse response = parser.GetResponse();
 		if (null == response)
@@ -48,7 +50,7 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 		
 		if (null != listener)
 		{
-			listener.onFinishRequest(response.Code, response.Message, response.Reason);
+			listener.onFinishRequest(response.Code, response.Message, response.Reason, response.UserType);
 		}
 	}
 	
@@ -56,7 +58,7 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 	{
 		if (null != listener)
 		{
-			listener.onFinishRequest(-1, null, null);
+			listener.onFinishRequest(-1, null, null, 0);
 		}		
 	}
 	
@@ -123,7 +125,8 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 			{
 				Map<String, String>  params = new HashMap<String, String>();  
 	            params.put("telno", phone_number);
-	            params.put("phoneid", registration_id);
+	            params.put("uid", registration_id);
+	            params.put("type", "A");
 				return params;
 			}			
 		};

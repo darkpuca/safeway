@@ -4,18 +4,35 @@
     android:layout_height="match_parent"
     tools:context=".AuthorizeActivity" >
     
-	<RelativeLayout
+<RelativeLayout
 	    android:id="@+id/layout_title"
 	    android:layout_width="match_parent"
 	    android:layout_height="@dimen/title_height"
-	    android:padding="@dimen/title_padding"
-	    android:background="@color/light_green" >
+	    android:paddingTop="@dimen/title_padding"
+	    android:paddingBottom="@dimen/title_padding"
+	    android:paddingLeft="@dimen/title_side_padding"
+	    android:paddingRight="@dimen/title_side_padding"
+	    android:background="@color/dark_gray" >
+	    
 	    <ImageView
-	        android:src="@drawable/ic_launcher"
-	        android:scaleType="center"
-	        android:layout_width="wrap_content"
+	        android:id="@+id/title_logo"
+	        android:layout_width="60dp"
 	        android:layout_height="wrap_content"
-	        android:layout_centerHorizontal="true" />
+	        android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:scaleType="fitEnd"
+	        android:src="@drawable/title_logo" />
+
+	    <TextView
+	        android:id="@+id/title_label"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_toLeftOf="@+id/title_logo"
+	        android:textSize="@dimen/title_fontsize"
+	        android:textColor="@color/white"
+	        android:textStyle="bold"
+	       	android:text="@string/title_activity_authorize" />
 	</RelativeLayout>
 	
 	<LinearLayout
@@ -53,17 +70,18 @@
 		    android:layout_marginTop="@dimen/item_margin" >
 		    <Button
 		        android:id="@+id/sendButton"
-		        android:layout_width="wrap_content" 
+		        android:layout_width="100dp" 
 		        android:layout_height="match_parent"
 		        android:layout_alignParentRight="true"
 		        android:textSize="@dimen/button_fontsize"
-		        android:text="@string/send" />
+		        android:text="@string/request_auth" />
 		    <EditText
 		        android:id="@+id/phoneNumEdit"
 		        android:layout_width="match_parent"
 		        android:layout_height="match_parent"
 		        android:layout_toLeftOf="@+id/sendButton"
 				android:inputType="phone"
+				android:textSize="@dimen/number_input_fontsize"
 				android:hint="@string/cellphone_number" />
 		</RelativeLayout>
 		
@@ -80,11 +98,11 @@
 		    android:layout_marginTop="@dimen/item_margin" >
 		    <Button
 		        android:id="@+id/certButton"
-		        android:layout_width="wrap_content" 
+		        android:layout_width="100dp" 
 		        android:layout_height="match_parent"
 		        android:layout_alignParentRight="true"
 		        android:textSize="@dimen/button_fontsize"
-		        android:text="@string/send" />
+		        android:text="@string/auth_check" />
 		    <EditText
 		        android:id="@+id/certNumEdit"
 		        android:layout_width="match_parent"

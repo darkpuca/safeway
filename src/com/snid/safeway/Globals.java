@@ -23,7 +23,18 @@ public class Globals
 	public static final String PROPERTY_AUTHORIZED_NUMBER = "authorized_number";
 	public static final String PROPERTY_REGISTED_DEVICE = "registed_device";
 	public static final String PROPERTY_PHONE_NUMBER = "phone_number";
+	public static final String PROPERTY_USER_TYPE = "user_type";
 	
 	public static final int INTENT_REQUEST_AUTH_NUMBER = 1000;
+	public static final int INTENT_MESSAGE_LIST = 1001;
+
+	public static final int USERTYPE_PARENTS = 200;
+	public static final int USERTYPE_STUDENT = 201;
+	public static final int USERTYPE_TEACHER = 202;
+	public static final int USERTYPE_AFTER_TEACHER = 203;
+	
+	public static final String DATETIME_FORMAT_FOR_MESSAGE = "yyyy³â M¿ù dÀÏ a hh:mm";
+	
+	public static final long INTRO_WAITING = 2000;
 
 }

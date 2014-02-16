@@ -2,6 +2,7 @@ package com.snid.safeway;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap.CompressFormat;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -14,7 +15,8 @@ import com.snid.safeway.request.RequestManager;
 
 public class MainApplication extends Application
 {
-	public static boolean IsSlideActive;
+	private static String phone_number;
+	private static int user_type;
 	
 	private static int DISK_IMAGECACHE_SIZE = 1024*1024*10;
 	private static CompressFormat DISK_IMAGECACHE_COMPRESS_FORMAT = CompressFormat.PNG;
@@ -24,12 +26,39 @@ public class MainApplication extends Application
 	private NetworkInfo wifiNetInfo, mobileNetInfo;
 	
 	
+	public static String getPhoneNumber() {
+		return phone_number;
+	}
+
+	public static void setPhoneNumber(String number) {
+		phone_number = number;
+	}
+
+	public static int getUserType() {
+		return user_type;
+	}
+
+	public static void setUserType(int type) {
+		user_type = type;
+	}
+
+
+
 	@Override
 	public void onCreate()
 	{
 		super.onCreate();
 
 		init();
+		
+		SharedPreferences prefs = getSharedPreferences(MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
+		boolean is_registed = prefs.getBoolean(Globals.PROPERTY_REGISTED_DEVICE, false);
+		if (is_registed)
+		{
+			phone_number = prefs.getString(Globals.PROPERTY_PHONE_NUMBER, "");
+			user_type = prefs.getInt(Globals.PROPERTY_USER_TYPE, 0);
+		}
+
 		
 	}
 	

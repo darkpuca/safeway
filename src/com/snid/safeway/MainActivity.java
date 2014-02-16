@@ -8,10 +8,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -27,7 +31,21 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 
 	private static final int REQ_DEVICE_REGISTRATION = 100;
 
-    private String phone_number, reg_id;
+    private String reg_id;
+    private ImageView intro_view;
+    
+	private Handler introHandler = null;
+	private Runnable introRunnable = new Runnable()
+	{	
+		@Override
+		public void run()
+		{
+//			intro_view.setVisibility(View.INVISIBLE);
+			
+	        startupProc();
+		}
+	};
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -37,7 +55,10 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 		
 		this.context = this;
 	    this.prefs = getPreferences(context);
-
+	    
+	    intro_view = (ImageView)findViewById(R.id.introView);
+		Bitmap bmpIntro = BitmapFactory.decodeResource(getResources(), R.drawable.intro);
+		intro_view.setImageBitmap(bmpIntro);
 		
 	    // Check device for Play Services APK.
 	    if (false == checkPlayServices())
@@ -56,22 +77,29 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
                 registerInBackground();
 
             // show device registration id
-            Toast.makeText(context, this.reg_id, Toast.LENGTH_LONG).show();
-            
-            if (authorizeProc())
-            {
-            	if (registrationProc())
-            		showMessageActivity();
-            }
+            //Toast.makeText(context, this.reg_id, Toast.LENGTH_LONG).show();
 	    }
+	    
+		introHandler = new Handler();
+		introHandler.postDelayed(introRunnable, Globals.INTRO_WAITING);
 	}
+
+	private void startupProc()
+	{
+		if (authorizeProc())
+		{
+			if (registrationProc())
+				showMessageActivity();
+		}
+	}
+
 
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
 		
-		checkPlayServices();
+//		checkPlayServices();
 	}
 
 
@@ -82,18 +110,22 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 		{
 			if (RESULT_OK == resultCode)
 			{
-				this.phone_number = data.getExtras().getString(Globals.PROPERTY_PHONE_NUMBER);
-				storePhoneNumber(this, this.phone_number);
+				MainApplication.setPhoneNumber(data.getExtras().getString(Globals.PROPERTY_PHONE_NUMBER));
+				MainApplication.setUserType(data.getExtras().getInt(Globals.PROPERTY_USER_TYPE, 0));
 				
-				if (registrationProc())
-				{
-					showMessageActivity();
-				}
+				storePhoneNumber(this, MainApplication.getPhoneNumber(), MainApplication.getUserType());
+
+				registrationProc();
 			}
 			else
 			{
 				Utils.GetDefaultTool().ShowFinishDialog(context, R.string.msg_phone_authorize_fail);
 			}
+		}
+		else if (Globals.INTENT_MESSAGE_LIST == requestCode)
+		{
+			finish();
+			System.exit(0);
 		}
 
 		super.onActivityResult(requestCode, resultCode, data);
@@ -109,6 +141,11 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 	    	Intent i = new Intent(this, AuthorizeActivity.class);
 	    	startActivityForResult(i, Globals.INTENT_REQUEST_AUTH_NUMBER);
 	    	return false;
+	    }
+	    else
+	    {
+	    	MainApplication.setPhoneNumber(prefs.getString(Globals.PROPERTY_PHONE_NUMBER, ""));
+	    	MainApplication.setUserType(prefs.getInt(Globals.PROPERTY_USER_TYPE, 0));
 	    }
 
 	    return true;
@@ -132,7 +169,7 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 		return true;
 	}
 	
-	private void storePhoneNumber(Context context, String phone_number)
+	private void storePhoneNumber(Context context, String phone_number, int user_type)
 	{
 	    final SharedPreferences prefs = getPreferences(context);
 	    int appVersion = getAppVersion(context);
@@ -140,7 +177,8 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 	    
 	    SharedPreferences.Editor editor = prefs.edit();
 	    editor.putString(Globals.PROPERTY_PHONE_NUMBER, phone_number);
-	    editor.putBoolean(Globals.PROPERTY_AUTHORIZED_NUMBER, true)
+	    editor.putBoolean(Globals.PROPERTY_AUTHORIZED_NUMBER, true);
+	    editor.putInt(Globals.PROPERTY_USER_TYPE, user_type);
 ;	    editor.commit();
 	}
 
@@ -157,8 +195,11 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 
 	private void showMessageActivity()
 	{
+//		intro_view.destroyDrawingCache();
+//		intro_view.setVisibility(View.GONE);
+
 		Intent i = new Intent(this, MessagesActivity.class);
-		startActivity(i);
+		startActivityForResult(i, Globals.INTENT_MESSAGE_LIST);
 	}
 
 	
@@ -329,25 +370,23 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
         protected void onPostExecute(String msg)
         {
         	Log.i("GCM", msg);
-        	Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+//        	Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
         }
 	}
 
 	@Override
-	public void onFinishRequest(int code, String message, String reason)
+	public void onFinishRequest(int code, String message, String reason, int user_type)
 	{
 		if (prog.isShowing()) prog.dismiss();
 		
 		if (REQ_DEVICE_REGISTRATION == req_type)
 		{
-			// test value
-			code = 0;
-			
 			if (0 == code || 1 == code)
 			{
 				// 0: ok, 1: already
 				storeDeviceRegisted(context, true);
 				showMessageActivity();
+				
 			}
 			else
 			{

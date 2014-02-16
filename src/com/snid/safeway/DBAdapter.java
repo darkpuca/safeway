@@ -19,14 +19,16 @@ public class DBAdapter
 	
 	private static final String DATABASE_NAME = "safewayDB";
 	private static final String DATABASE_TABLE = "messages";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 3;
 
 	private static final String DATABASE_CREATE =
 			"CREATE TABLE messages (phone_number TEXT NOT NULL , "
 			+ "receive_time INTEGER NOT NULL , "
-			+ "sender_id TEXT NOT NULL , "
-			+ "sender_number TEXT NOT NULL , "
-			+ "message TEXT NOT NULL )";
+			+ "message TEXT NOT NULL , "
+			+ "sender_id TEXT , " 
+			+ "sender_number TEXT )";
+
+	private final Context context;
 
 	private DatabaseHelper DBHelper;
 	private SQLiteDatabase db;
@@ -64,6 +66,11 @@ public class DBAdapter
 	
 	
 	
+	public DBAdapter(Context ctx)
+	{
+		this.context = ctx;
+		DBHelper = new DatabaseHelper(context);
+	}
 
 	public DBAdapter open() throws SQLException
 	{
@@ -91,6 +98,8 @@ public class DBAdapter
 		try
 		{
 			long ret = db.insert(DATABASE_TABLE, null,  initialValues);
+			
+			Log.i("SafeWay-DB", "new message inserted: " + message.getMessage());
 			return ret;
 		}
 		catch (SQLException e)
@@ -117,11 +126,20 @@ public class DBAdapter
 	
 	public Cursor getMessages(String phone_number)
 	{
-		String[] columns = new String[] { KEY_PHONE_NUMBER, KEY_RECEIVE_TIME, KEY_SENDER_ID, KEY_SENDER_NUMBER, KEY_MESSAGE };
+		String[] columns = new String[] { KEY_RECEIVE_TIME, KEY_MESSAGE };
 		String sqlWhere = KEY_PHONE_NUMBER + "='" + phone_number + "'";
 		
-		Cursor c = db.query(DATABASE_TABLE, columns, sqlWhere, null, null, null, KEY_RECEIVE_TIME + " ASC");
+		try
+		{
+			Cursor c = db.query(DATABASE_TABLE, columns, sqlWhere, null, null, null, KEY_RECEIVE_TIME + " ASC");
+			return c;
+			
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 		
-		return c;
+		return null;
 	}
 }

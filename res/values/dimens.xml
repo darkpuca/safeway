@@ -5,13 +5,18 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="title_height">52dp</dimen>
-    <dimen name="title_padding">2dp</dimen>
+    <dimen name="title_padding">4dp</dimen>
+    <dimen name="title_side_padding">12dp</dimen>
     <dimen name="body_padding">16dp</dimen>
     <dimen name="item_margin">4dp</dimen>
     <dimen name="section_margin">12dp</dimen>
     <dimen name="input_height">44dp</dimen>
     
-    <dimen name="caption_fontsize">20sp</dimen>
-    <dimen name="button_fontsize">14sp</dimen>
+    <dimen name="title_fontsize">24sp</dimen>
+    <dimen name="caption_fontsize">18sp</dimen>
+    <dimen name="number_input_fontsize">16sp</dimen>
+    <dimen name="button_fontsize">16sp</dimen>
+    <dimen name="noti_time_fontsize">14sp</dimen>
+    <dimen name="noti_message_fontsize">17sp</dimen>
     
 </resources>
