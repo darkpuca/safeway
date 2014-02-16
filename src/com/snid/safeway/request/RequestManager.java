@@ -29,7 +29,8 @@ public class RequestManager {
 	 * @param context
 	 * 			application context
 	 */
-	public static void init(Context context) {
+	public static void init(Context context)
+	{
 		mRequestQueue = Volley.newRequestQueue(context);
 	}
 

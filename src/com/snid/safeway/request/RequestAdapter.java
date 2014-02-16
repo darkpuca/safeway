@@ -1,16 +1,20 @@
 package com.snid.safeway.request;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.Request.Method;
 import com.android.volley.toolbox.StringRequest;
 import com.snid.safeway.Globals;
-import com.snid.safeway.request.RequestManager;
 import com.snid.safeway.request.MyXMLParser.snidResponse;
 
 public class RequestAdapter implements Response.Listener<String>, Response.ErrorListener
@@ -70,17 +74,28 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 		this.listener = listener;
 
 		String urlString = Globals.URL_NUMBER_REGISTRATION;
+		
+		
 
 		StringRequest req = new StringRequest(Method.POST, urlString, this, this)
 		{
 			@Override
 			protected Map<String, String> getParams() throws AuthFailureError
 			{
+				Date now = new Date();
+				Random rand = new Random(now.getTime());
+				int rnumber = Math.abs(rand.nextInt());
+
 				Map<String, String>  params = new HashMap<String, String>();  
 	            params.put("telno", phone_number);
+	            params.put("rnumber", Integer.toString(rnumber));
+//				Log.d("SafeWay-Debug", params.toString());
+	            
 				return params;
 			}			
 		};
+		
+		req.setRetryPolicy(new DefaultRetryPolicy(Globals.REQUEST_TIMEOUT, 0, 0));
 		
 		reqQueue.add(req);
 	}
@@ -106,6 +121,8 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 			}			
 		};
 		
+		req.setRetryPolicy(new DefaultRetryPolicy(Globals.REQUEST_TIMEOUT, 0, 0));
+		
 		reqQueue.add(req);
 	}
 
@@ -130,6 +147,8 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 				return params;
 			}			
 		};
+		
+		req.setRetryPolicy(new DefaultRetryPolicy(Globals.REQUEST_TIMEOUT, 0, 0));
 		
 		reqQueue.add(req);
 	}

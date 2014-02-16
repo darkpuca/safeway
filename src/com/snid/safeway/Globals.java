@@ -36,5 +36,6 @@ public class Globals
 	public static final String DATETIME_FORMAT_FOR_MESSAGE = "yyyy³â M¿ù dÀÏ a hh:mm";
 	
 	public static final long INTRO_WAITING = 2000;
+	public static final int REQUEST_TIMEOUT = 10000;
 
 }
