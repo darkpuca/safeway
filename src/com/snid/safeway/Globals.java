@@ -10,6 +10,7 @@ public class Globals
 	public static final String URL_NUMBER_REGISTRATION			= URI_SERVER + "_app/send_auth_sms.php";
 	public static final String URL_NUMBER_REGISTRATION_CHECK	= URI_SERVER + "_app/do_check_auth_no.php";
 	public static final String URL_DEVICE_REGISTRATION			= URI_SERVER + "_app/do_regist_user.php";
+	public static final String URL_DEVICE_KEEP_ALIVE			= URI_SERVER + "_app/do_check_uid.php";
 	
 	public static final int RESPONSE_OK = 0;
 	public static final int RESPONSE_FAIL = 1;

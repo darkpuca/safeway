@@ -19,9 +19,6 @@ implements OnClickListener, RequestAdapterListener
 	
 	private String phone_number, auth_number;
 	
-	private static final int REQ_SEND_SMS	= 100;
-	private static final int REQ_CHECK_AUTH	= 101;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{

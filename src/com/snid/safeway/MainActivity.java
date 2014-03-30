@@ -29,9 +29,7 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
     private SharedPreferences prefs;
     private Context context;
 
-	private static final int REQ_DEVICE_REGISTRATION = 100;
-
-    private String reg_id;
+    private String reg_id, phone_number;
     private ImageView intro_view;
     
 	private Handler introHandler = null;
@@ -76,8 +74,7 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
             if (this.reg_id.isEmpty())
                 registerInBackground();
 
-            // show device registration id
-            //Toast.makeText(context, this.reg_id, Toast.LENGTH_LONG).show();
+            this.phone_number = getPhoneNumber(context);
 	    }
 	    
 		introHandler = new Handler();
@@ -99,9 +96,24 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 	{
 		super.onResume();
 		
+//		sendKeepAlive();
 //		checkPlayServices();
 	}
 
+	private void sendKeepAlive()
+	{
+		if (null != reg_id && null != phone_number)
+		{
+		    final SharedPreferences prefs = getPreferences(context);
+		    Boolean isRegisted = prefs.getBoolean(Globals.PROPERTY_REGISTED_DEVICE, false);  
+
+		    if (true == isRegisted)
+		    {
+		    	req_type = REQ_KEEP_ALIVE;
+				req.SendRegistrationKeepAlive(this, phone_number, reg_id);
+		    }
+		}
+	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -110,7 +122,9 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 		{
 			if (RESULT_OK == resultCode)
 			{
-				MainApplication.setPhoneNumber(data.getExtras().getString(Globals.PROPERTY_PHONE_NUMBER));
+				phone_number = data.getExtras().getString(Globals.PROPERTY_PHONE_NUMBER);
+				
+				MainApplication.setPhoneNumber(phone_number);
 				MainApplication.setUserType(data.getExtras().getInt(Globals.PROPERTY_USER_TYPE, 0));
 				
 				storePhoneNumber(this, MainApplication.getPhoneNumber(), MainApplication.getUserType());
@@ -189,8 +203,8 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 	    Log.i("safeway", "Saving regId on app version " + appVersion);
 	    
 	    SharedPreferences.Editor editor = prefs.edit();
-	    editor.putBoolean(Globals.PROPERTY_REGISTED_DEVICE, registed)
-;	    editor.commit();
+	    editor.putBoolean(Globals.PROPERTY_REGISTED_DEVICE, registed);
+	    editor.commit();
 	}
 
 	private void showMessageActivity()
@@ -258,6 +272,14 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 	    }
 
 	    return registrationId;
+	}
+
+	private String getPhoneNumber(Context context)
+	{
+	    final SharedPreferences prefs = getPreferences(context);
+	    String number = prefs.getString(Globals.PROPERTY_PHONE_NUMBER, "");
+
+	    return number;
 	}
 
 	/**
@@ -386,12 +408,19 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 				// 0: ok, 1: already
 				storeDeviceRegisted(context, true);
 				showMessageActivity();
-				
 			}
 			else
 			{
 				// error
 				Utils.GetDefaultTool().ShowFinishDialog(context, R.string.msg_device_registration_fail);
+			}
+		}
+		else if (REQ_KEEP_ALIVE == req_type)
+		{
+			// do not anything.
+			if (0 == code)
+			{
+				System.out.println("keep alive: " + message);
 			}
 		}
 	}

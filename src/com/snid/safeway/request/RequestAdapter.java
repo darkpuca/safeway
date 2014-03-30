@@ -19,6 +19,8 @@ import com.snid.safeway.request.MyXMLParser.snidResponse;
 
 public class RequestAdapter implements Response.Listener<String>, Response.ErrorListener
 {
+    static private String TAG = "SERVER"; 
+	
 	private RequestAdapterListener listener = null;
 	
 	public interface RequestAdapterListener
@@ -42,12 +44,14 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 			return;
 		}
 		
-		System.out.println("responze xml: " + xml);
+//		System.out.println("response xml: " + xml);
 		
 		MyXMLParser parser = new MyXMLParser(xml);
 		snidResponse response = parser.GetResponse();
 		if (null == response)
 		{
+			Log.d(TAG, "response xml: " + xml);
+			
 			failResponse();
 			return;
 		}
@@ -74,8 +78,7 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 		this.listener = listener;
 
 		String urlString = Globals.URL_NUMBER_REGISTRATION;
-		
-		
+		Log.d(TAG, "server request: " + urlString);
 
 		StringRequest req = new StringRequest(Method.POST, urlString, this, this)
 		{
@@ -108,6 +111,7 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 		this.listener = listener;
 
 		String urlString = Globals.URL_NUMBER_REGISTRATION_CHECK;
+		Log.d(TAG, "server request: " + urlString);
 
 		StringRequest req = new StringRequest(Method.POST, urlString, this, this)
 		{
@@ -134,6 +138,7 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 		this.listener = listener;
 
 		String urlString = Globals.URL_DEVICE_REGISTRATION;
+		Log.d(TAG, "server request: " + urlString);
 
 		StringRequest req = new StringRequest(Method.POST, urlString, this, this)
 		{
@@ -153,4 +158,31 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 		reqQueue.add(req);
 	}
 
+	public void SendRegistrationKeepAlive(RequestAdapterListener listener, final String phone_number, final String registration_id)
+	{
+		RequestQueue reqQueue = RequestManager.getRequestQueue();
+		if (null == reqQueue) return;
+		
+		this.listener = listener;
+
+		String urlString = Globals.URL_DEVICE_KEEP_ALIVE;
+		Log.d(TAG, "server request: " + urlString);
+
+		StringRequest req = new StringRequest(Method.POST, urlString, this, this)
+		{
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError
+			{
+				Map<String, String>  params = new HashMap<String, String>();  
+	            params.put("telno", phone_number);
+	            params.put("uid", registration_id);
+				return params;
+			}			
+		};
+		
+		req.setRetryPolicy(new DefaultRetryPolicy(Globals.REQUEST_TIMEOUT, 0, 0));
+		
+		reqQueue.add(req);
+	}
+	
 }
