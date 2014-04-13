@@ -28,7 +28,7 @@
 	           android:layout_alignParentLeft="true"
 	           android:padding="1dp"
 	           android:scaleType="fitCenter"
-	           android:src="@drawable/title_logo"
+	           android:src="@drawable/darc_icon"
 	           android:background="@drawable/list_icon_shape" />
 	       
 		<TextView

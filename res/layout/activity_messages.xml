@@ -21,7 +21,7 @@
 	        android:layout_alignParentRight="true"
 	        android:layout_centerVertical="true"
 	        android:scaleType="fitEnd"
-	        android:src="@drawable/title_logo" />
+	        android:src="@drawable/darc_icon" />
 
 	    <TextView
 	        android:id="@+id/title_label"

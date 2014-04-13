@@ -55,7 +55,7 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 	    this.prefs = getPreferences(context);
 	    
 	    intro_view = (ImageView)findViewById(R.id.introView);
-		Bitmap bmpIntro = BitmapFactory.decodeResource(getResources(), R.drawable.intro);
+		Bitmap bmpIntro = BitmapFactory.decodeResource(getResources(), R.drawable.darc_launch);
 		intro_view.setImageBitmap(bmpIntro);
 		
 	    // Check device for Play Services APK.
