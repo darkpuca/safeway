@@ -7,10 +7,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import com.google.android.gms.common.annotation.KeepName;
+import com.snid.safeway.request.RequestAdapter.RequestAdapterListener;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class MessagesActivity extends Activity
+public class MessagesActivity extends BaseActivity implements RequestAdapterListener
 {
 	public static boolean IsActive; 
 	private ListView messageList;
@@ -35,12 +40,16 @@ public class MessagesActivity extends Activity
 	
 	private Timer updateTimer;
 	private NotificationManager notiManager;
+	private String device_id, phone_number;
+	private int test_check = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_messages);
+		
+		getKeepAliveInfos();
 		
 		notiManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		
@@ -86,11 +95,7 @@ public class MessagesActivity extends Activity
 		}, 1000, 1000);
 		
 		messageList.setDividerHeight(0);
-		
-//		queueHandler = new Handler();
-//		queueHandler.post(queueRunnable);
 
-//		registerForContextMenu(messageList);
 	}
 
 	@Override
@@ -107,7 +112,6 @@ public class MessagesActivity extends Activity
 	@Override
 	public void onBackPressed()
 	{
-		
 		// 'back'버튼 선택하면 확인 메세지.
 		AlertDialog.Builder exitDlg = new AlertDialog.Builder(this);
 		exitDlg.setCancelable(true);
@@ -148,6 +152,8 @@ public class MessagesActivity extends Activity
 		notiManager.cancelAll();
 		
 		IsActive = true;
+		
+		sendKeepAlive();
 
 		super.onResume();
 	}
@@ -213,6 +219,24 @@ public class MessagesActivity extends Activity
 		
 		return super.onOptionsItemSelected(item);
 	}
+	
+	private void getKeepAliveInfos()
+	{
+		SharedPreferences prefs = getSharedPreferences(MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
+		device_id = prefs.getString(Globals.PROPERTY_REG_ID, "");
+		phone_number = prefs.getString(Globals.PROPERTY_PHONE_NUMBER, "");
+	}
+	
+
+	private void sendKeepAlive()
+	{
+		if (null != device_id && null != phone_number)
+		{
+	    	req_type = REQ_KEEP_ALIVE;
+			req.SendRegistrationKeepAlive(this, phone_number, device_id);
+		}
+	}
+
 
 	private void createListAdapter()
 	{
@@ -327,6 +351,37 @@ public class MessagesActivity extends Activity
 			container.message_label.setText(item.getMessage());
 			
 			return rowView;
+		}		
+	}
+
+	@Override
+	public void onFinishRequest(int code, String message, String reason, int user_type)
+	{
+		if (prog.isShowing()) prog.dismiss();
+		
+		if (REQ_KEEP_ALIVE == req_type)
+		{
+			if (test_check >= 3)
+			{
+//				code = 1;
+				test_check = 0;
+			}
+			
+			// do not anything.
+			if (0 == code)
+			{
+				test_check++;
+				System.out.println("keep alive ok.");
+			}
+			else if (1 == code)
+			{
+				// 서버에서 device-id가 정리된 경우.
+				System.out.println("keep alive fail.");
+				
+				// MainActivity를 통해 인증을 다시 받음.
+				setResult(RESULT_CANCELED);
+				finish();
+			}
 		}		
 	}	
 	

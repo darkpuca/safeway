@@ -39,7 +39,6 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 		public void run()
 		{
 //			intro_view.setVisibility(View.INVISIBLE);
-			
 	        startupProc();
 		}
 	};
@@ -81,6 +80,17 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 		introHandler.postDelayed(introRunnable, Globals.INTRO_WAITING);
 	}
 
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		
+//		keepAliveProc();
+		
+//		checkPlayServices();
+	}
+
 	private void startupProc()
 	{
 		if (authorizeProc())
@@ -89,15 +99,13 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 				showMessageActivity();
 		}
 	}
-
-
-	@Override
-	protected void onResume()
+	
+	private void keepAliveProc()
 	{
-		super.onResume();
-		
-//		sendKeepAlive();
-//		checkPlayServices();
+		if (authorizeProc())
+		{
+			sendKeepAlive();
+		}
 	}
 
 	private void sendKeepAlive()
@@ -115,36 +123,6 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 		}
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		if (Globals.INTENT_REQUEST_AUTH_NUMBER == requestCode)
-		{
-			if (RESULT_OK == resultCode)
-			{
-				phone_number = data.getExtras().getString(Globals.PROPERTY_PHONE_NUMBER);
-				
-				MainApplication.setPhoneNumber(phone_number);
-				MainApplication.setUserType(data.getExtras().getInt(Globals.PROPERTY_USER_TYPE, 0));
-				
-				storePhoneNumber(this, MainApplication.getPhoneNumber(), MainApplication.getUserType());
-
-				registrationProc();
-			}
-			else
-			{
-				Utils.GetDefaultTool().ShowFinishDialog(context, R.string.msg_phone_authorize_fail);
-			}
-		}
-		else if (Globals.INTENT_MESSAGE_LIST == requestCode)
-		{
-			finish();
-			System.exit(0);
-		}
-
-		super.onActivityResult(requestCode, resultCode, data);
-	}
-	
 	private boolean authorizeProc()
 	{
 	    boolean is_authorized = prefs.getBoolean(Globals.PROPERTY_AUTHORIZED_NUMBER, false);
@@ -154,6 +132,7 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 	    	// 전화번호 인증이 되지 않았을 경우 인증 화면 전환.
 	    	Intent i = new Intent(this, AuthorizeActivity.class);
 	    	startActivityForResult(i, Globals.INTENT_REQUEST_AUTH_NUMBER);
+
 	    	return false;
 	    }
 	    else
@@ -178,9 +157,56 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 			setProgressMessage(R.string.msg_request_regist_device_id);
 			req_type = REQ_DEVICE_REGISTRATION;
 			req.SendDeviceRegistrationId(this, phone_number, reg_id);
+			return false;
 		}
 		
 		return true;
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (Globals.INTENT_REQUEST_AUTH_NUMBER == requestCode)
+		{
+			if (RESULT_OK == resultCode)
+			{
+				phone_number = data.getExtras().getString(Globals.PROPERTY_PHONE_NUMBER);
+				
+				MainApplication.setPhoneNumber(phone_number);
+				MainApplication.setUserType(data.getExtras().getInt(Globals.PROPERTY_USER_TYPE, 0));
+				
+				storePhoneNumber(this, MainApplication.getPhoneNumber(), MainApplication.getUserType());
+
+				if (registrationProc())
+					showMessageActivity();
+			}
+			else
+			{
+				Utils.GetDefaultTool().ShowFinishDialog(context, R.string.msg_phone_authorize_fail);
+			}
+		}
+		else if (Globals.INTENT_MESSAGE_LIST == requestCode)
+		{
+			if (RESULT_OK == resultCode)
+			{
+				// 앱 종료로 처리되어 들어온 경우 종료.
+				finish();
+				System.exit(0);
+			}
+			else if (RESULT_CANCELED == resultCode)
+			{
+				// keep-alive 실패한 경우 재인증.
+			    SharedPreferences.Editor editor = prefs.edit();
+			    editor.remove(Globals.PROPERTY_PHONE_NUMBER);
+			    editor.remove(Globals.PROPERTY_AUTHORIZED_NUMBER);
+			    editor.remove(Globals.PROPERTY_USER_TYPE);
+			    editor.commit();
+			    
+			    authorizeProc();
+			}
+		}
+
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	private void storePhoneNumber(Context context, String phone_number, int user_type)
@@ -193,7 +219,7 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 	    editor.putString(Globals.PROPERTY_PHONE_NUMBER, phone_number);
 	    editor.putBoolean(Globals.PROPERTY_AUTHORIZED_NUMBER, true);
 	    editor.putInt(Globals.PROPERTY_USER_TYPE, user_type);
-;	    editor.commit();
+	    editor.commit();
 	}
 
 	private void storeDeviceRegisted(Context context, boolean registed)
@@ -401,6 +427,12 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 	{
 		if (prog.isShowing()) prog.dismiss();
 		
+		if (0 > code)
+		{
+			Utils.GetDefaultTool().ShowFinishDialog(context, R.string.msg_request_fail);
+			return;
+		}
+		
 		if (REQ_DEVICE_REGISTRATION == req_type)
 		{
 			if (0 == code || 1 == code)
@@ -422,6 +454,12 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 			{
 				System.out.println("keep alive: " + message);
 			}
+			else if (1 == code)
+			{
+				// 서버에서 device-id가 정리된 경우 인증을 다시 받음.
+			}
+			
+			startupProc();
 		}
 	}
 }

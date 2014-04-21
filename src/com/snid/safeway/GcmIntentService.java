@@ -124,7 +124,7 @@ public class GcmIntentService extends IntentService
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notiIntent, 0);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
-        mBuilder.setSmallIcon(R.drawable.safeway);
+        mBuilder.setSmallIcon(R.drawable.push_icon);
         mBuilder.setContentTitle(getResources().getString(R.string.gcm_title));
         mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(msg));
         mBuilder.setContentText(msg);

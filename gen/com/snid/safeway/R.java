@@ -251,14 +251,15 @@ containing a value of this type.
         public static final int ic_plusone_small_off_client=0x7f02001c;
         public static final int ic_plusone_standard_off_client=0x7f02001d;
         public static final int ic_plusone_tall_off_client=0x7f02001e;
-        public static final int intro=0x7f02001f;
-        public static final int list_bg_frame=0x7f020020;
-        public static final int list_icon_shape=0x7f020021;
-        public static final int list_tiled_bg=0x7f020022;
-        public static final int message_tile_bg=0x7f020023;
-        public static final int message_tile_bg2=0x7f020024;
-        public static final int safeway=0x7f020025;
-        public static final int title_logo=0x7f020026;
+        public static final int icon=0x7f02001f;
+        public static final int intro=0x7f020020;
+        public static final int list_bg_frame=0x7f020021;
+        public static final int list_icon_shape=0x7f020022;
+        public static final int list_tiled_bg=0x7f020023;
+        public static final int message_tile_bg=0x7f020024;
+        public static final int message_tile_bg2=0x7f020025;
+        public static final int push_icon=0x7f020026;
+        public static final int title_logo=0x7f020027;
     }
     public static final class id {
         public static final int action_clear_histories=0x7f06001c;
@@ -320,7 +321,7 @@ containing a value of this type.
     public static final class string {
         public static final int action_settings=0x7f07001b;
         public static final int app_name=0x7f07001a;
-        public static final int auth_check=0x7f070026;
+        public static final int auth_check=0x7f070027;
         /**   Title for notification shown when GooglePlayServices needs to be
         enabled for a application to work. [CHAR LIMIT=70] 
          */
@@ -344,12 +345,12 @@ containing a value of this type.
         [CHAR LIMIT=70] 
          */
         public static final int auth_client_using_bad_version_title=0x7f070014;
-        public static final int cancel=0x7f070030;
-        public static final int cellphone_number=0x7f070028;
-        public static final int certification_number=0x7f070029;
-        public static final int clear_histories=0x7f07002b;
-        public static final int clear_messages=0x7f07002a;
-        public static final int close=0x7f07002d;
+        public static final int cancel=0x7f070031;
+        public static final int cellphone_number=0x7f070029;
+        public static final int certification_number=0x7f07002a;
+        public static final int clear_histories=0x7f07002c;
+        public static final int clear_messages=0x7f07002b;
+        public static final int close=0x7f07002e;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
         can enable it [CHAR LIMIT=40] 
@@ -421,37 +422,37 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f070013;
-        public static final int confirm=0x7f070027;
-        public static final int continue_=0x7f07002f;
-        public static final int exit=0x7f07002e;
+        public static final int confirm=0x7f070028;
+        public static final int continue_=0x7f070030;
+        public static final int exit=0x7f07002f;
         public static final int gcm_title=0x7f07001d;
         public static final int hello_world=0x7f07001c;
-        public static final int information=0x7f07002c;
-        public static final int msg_auth_fail=0x7f07003f;
-        public static final int msg_auth_success=0x7f07003e;
-        public static final int msg_clear_messages_confirm=0x7f070043;
-        public static final int msg_delete_messages_confirm=0x7f070044;
-        public static final int msg_device_registration_fail=0x7f070041;
-        public static final int msg_empty_auth_number=0x7f070037;
-        public static final int msg_empty_mobile_number=0x7f070036;
-        public static final int msg_exit_confirm=0x7f070042;
-        public static final int msg_gps_setting_confirm=0x7f070035;
-        public static final int msg_insert_cellphone_number=0x7f070033;
-        public static final int msg_insert_certification_number=0x7f070034;
-        public static final int msg_phone_authorize_fail=0x7f070040;
-        public static final int msg_play_service_disable=0x7f070031;
-        public static final int msg_request_auth_check=0x7f070039;
-        public static final int msg_request_auth_number=0x7f070038;
-        public static final int msg_request_fail=0x7f07003d;
-        public static final int msg_request_regist_device_id=0x7f07003a;
-        public static final int msg_request_success=0x7f07003c;
-        public static final int msg_select_registration_type=0x7f070032;
-        public static final int msg_send_request=0x7f07003b;
-        public static final int request_auth=0x7f070025;
-        public static final int send=0x7f070024;
+        public static final int information=0x7f07002d;
+        public static final int msg_auth_fail=0x7f070040;
+        public static final int msg_auth_success=0x7f07003f;
+        public static final int msg_clear_messages_confirm=0x7f070044;
+        public static final int msg_delete_messages_confirm=0x7f070045;
+        public static final int msg_device_registration_fail=0x7f070042;
+        public static final int msg_empty_auth_number=0x7f070038;
+        public static final int msg_empty_mobile_number=0x7f070037;
+        public static final int msg_exit_confirm=0x7f070043;
+        public static final int msg_gps_setting_confirm=0x7f070036;
+        public static final int msg_insert_cellphone_number=0x7f070034;
+        public static final int msg_insert_certification_number=0x7f070035;
+        public static final int msg_phone_authorize_fail=0x7f070041;
+        public static final int msg_play_service_disable=0x7f070032;
+        public static final int msg_request_auth_check=0x7f07003a;
+        public static final int msg_request_auth_number=0x7f070039;
+        public static final int msg_request_fail=0x7f07003e;
+        public static final int msg_request_regist_device_id=0x7f07003b;
+        public static final int msg_request_success=0x7f07003d;
+        public static final int msg_select_registration_type=0x7f070033;
+        public static final int msg_send_request=0x7f07003c;
+        public static final int request_auth=0x7f070026;
+        public static final int send=0x7f070025;
         public static final int title_activity_authorize=0x7f07001e;
         public static final int title_activity_history=0x7f070020;
-        public static final int title_activity_info=0x7f070045;
+        public static final int title_activity_info=0x7f070024;
         public static final int title_activity_messages=0x7f07001f;
         public static final int title_activity_notice_detail=0x7f070022;
         public static final int title_activity_notices=0x7f070021;
