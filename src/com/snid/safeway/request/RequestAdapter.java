@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Vector;
 
 import android.util.Log;
 
@@ -15,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.snid.safeway.Globals;
+import com.snid.safeway.MessageItem;
 import com.snid.safeway.request.MyXMLParser.snidResponse;
 
 public class RequestAdapter implements Response.Listener<String>, Response.ErrorListener
@@ -22,10 +24,11 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
     static private String TAG = "SERVER"; 
 	
 	private RequestAdapterListener listener = null;
+	private int requestType = 0;
 	
 	public interface RequestAdapterListener
 	{
-		void onFinishRequest(int code, String message, String reason, int user_type);
+		void onFinishRequest(int code, String message, String reason, int user_type, Vector<MessageItem> messages);
 	}
 
 	@Override
@@ -58,7 +61,8 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 		
 		if (null != listener)
 		{
-			listener.onFinishRequest(response.Code, response.Message, response.Reason, response.UserType);
+			Vector<MessageItem> messages = parser.GetMessages();
+			listener.onFinishRequest(response.Code, response.Message, response.Reason, response.UserType, messages);
 		}
 	}
 	
@@ -66,7 +70,7 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 	{
 		if (null != listener)
 		{
-			listener.onFinishRequest(-1, null, null, 0);
+			listener.onFinishRequest(-1, null, null, 0, null);
 		}		
 	}
 	
@@ -185,4 +189,60 @@ public class RequestAdapter implements Response.Listener<String>, Response.Error
 		reqQueue.add(req);
 	}
 	
+	public void GetMessages(RequestAdapterListener listener, final String phone_number, final String registration_id)
+	{
+		RequestQueue reqQueue = RequestManager.getRequestQueue();
+		if (null == reqQueue) return;
+		
+		this.requestType = Globals.REQ_GET_MESSAGES;
+		this.listener = listener;
+
+		String urlString = Globals.URL_GET_MESSAGES;
+		Log.d(TAG, "server request: " + urlString);
+
+		StringRequest req = new StringRequest(Method.POST, urlString, this, this)
+		{
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError
+			{
+				Map<String, String>  params = new HashMap<String, String>();  
+	            params.put("telno", phone_number);
+	            params.put("uid", registration_id);
+				return params;
+			}			
+		};
+		
+		req.setRetryPolicy(new DefaultRetryPolicy(Globals.REQUEST_TIMEOUT, 0, 0));
+		
+		reqQueue.add(req);
+	}
+	
+	public void UpdateLastMessageId(RequestAdapterListener listener, final String phone_number, final String registration_id, final int message_id)
+	{
+		RequestQueue reqQueue = RequestManager.getRequestQueue();
+		if (null == reqQueue) return;
+		
+		this.listener = listener;
+
+		String urlString = Globals.URL_UPDATE_LAST_MESSAGE_ID;
+		Log.d(TAG, "server request: " + urlString);
+
+		StringRequest req = new StringRequest(Method.POST, urlString, this, this)
+		{
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError
+			{
+				Map<String, String>  params = new HashMap<String, String>();  
+	            params.put("telno", phone_number);
+	            params.put("uid", registration_id);
+	            params.put("smslogidx", Integer.toString(message_id));
+				return params;
+			}			
+		};
+		
+		req.setRetryPolicy(new DefaultRetryPolicy(Globals.REQUEST_TIMEOUT, 0, 0));
+		
+		reqQueue.add(req);
+	}
+
 }

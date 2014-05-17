@@ -13,11 +13,6 @@ public class BaseActivity extends Activity
 	
 	protected ProgressDialog prog;
 	
-	protected static final int REQ_SEND_SMS				= 100;
-	protected static final int REQ_CHECK_AUTH			= 101;
-	protected static final int REQ_DEVICE_REGISTRATION	= 102;
-	protected static final int REQ_KEEP_ALIVE			= 103;
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)

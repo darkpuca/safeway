@@ -2,13 +2,11 @@ package com.snid.safeway;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
-
-import com.google.android.gms.common.annotation.KeepName;
-import com.snid.safeway.request.RequestAdapter.RequestAdapterListener;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -30,6 +28,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.snid.safeway.request.RequestAdapter.RequestAdapterListener;
+
 public class MessagesActivity extends BaseActivity implements RequestAdapterListener
 {
 	public static boolean IsActive; 
@@ -37,6 +37,7 @@ public class MessagesActivity extends BaseActivity implements RequestAdapterList
 	private DBAdapter db;
 	private MessageListAdapter adapter;
 	private static Vector<MessageItem> updateQueue = null;
+	public static boolean NeedUpdate;
 	
 	private Timer updateTimer;
 	private NotificationManager notiManager;
@@ -48,6 +49,8 @@ public class MessagesActivity extends BaseActivity implements RequestAdapterList
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_messages);
+		
+		NeedUpdate = false;
 		
 		getKeepAliveInfos();
 		
@@ -79,6 +82,12 @@ public class MessagesActivity extends BaseActivity implements RequestAdapterList
 					@Override
 					public void run()
 					{
+						if (true == NeedUpdate)
+						{
+							NeedUpdate = false;
+							refreshMessages();
+						}
+						/*
 						if (0 < updateQueue.size())
 						{
 							MessageItem item = updateQueue.get(0);
@@ -89,6 +98,7 @@ public class MessagesActivity extends BaseActivity implements RequestAdapterList
 							if (0 < adapter.getCount())
 								messageList.setSelection(adapter.getCount() - 1);
 						}
+						*/
 					}
 				});
 			}
@@ -152,6 +162,8 @@ public class MessagesActivity extends BaseActivity implements RequestAdapterList
 		notiManager.cancelAll();
 		
 		IsActive = true;
+		
+		
 		
 		sendKeepAlive();
 
@@ -232,7 +244,7 @@ public class MessagesActivity extends BaseActivity implements RequestAdapterList
 	{
 		if (null != device_id && null != phone_number)
 		{
-	    	req_type = REQ_KEEP_ALIVE;
+	    	req_type = Globals.REQ_KEEP_ALIVE;
 			req.SendRegistrationKeepAlive(this, phone_number, device_id);
 		}
 	}
@@ -292,7 +304,55 @@ public class MessagesActivity extends BaseActivity implements RequestAdapterList
 	public static void AddNewMessage(MessageItem newItem)
 	{
 		if (IsActive)
-			updateQueue.add(newItem);
+		{
+			//updateQueue.add(newItem);
+			UpdateMessages();
+		}
+	}
+	
+	public static void UpdateMessages()
+	{
+		if (IsActive)
+			NeedUpdate = true;		
+	}
+	
+	private void refreshMessages()
+	{
+		if (null == device_id || null == phone_number) return;
+		
+		setProgressMessage(R.string.msg_request_messages);
+		if (false == prog.isShowing()) prog.show();
+
+    	req_type = Globals.REQ_GET_MESSAGES;
+		req.GetMessages(this, phone_number, device_id);
+	}
+
+	private void updateLastMessageId(int id)
+	{
+		if (null == device_id || null == phone_number) return;
+		
+//		setProgressMessage(R.string.msg_send_request);
+//		if (false == prog.isShowing()) prog.show();
+
+		req_type = Globals.REQ_UPDATE_LAST_MESSAGE_ID;
+		req.UpdateLastMessageId(this, phone_number, device_id, id);
+	}	
+	
+	
+	public int getLastMessageId()
+	{
+		SharedPreferences prefs = getSharedPreferences(MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
+	    int lastId = prefs.getInt(Globals.PROPERTY_LAST_RECEIVE_MESSAGE_ID, 0);
+	    
+		return lastId;
+	}
+	
+	public void storeLastMessageId(int msgId)
+	{
+		SharedPreferences prefs = getSharedPreferences(MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
+	    SharedPreferences.Editor editor = prefs.edit();
+	    editor.putInt(Globals.PROPERTY_USER_TYPE, msgId);
+	    editor.commit();
 	}
 	
 	
@@ -355,11 +415,11 @@ public class MessagesActivity extends BaseActivity implements RequestAdapterList
 	}
 
 	@Override
-	public void onFinishRequest(int code, String message, String reason, int user_type)
+	public void onFinishRequest(int code, String message, String reason, int user_type, Vector<MessageItem> messages)
 	{
 		if (prog.isShowing()) prog.dismiss();
 		
-		if (REQ_KEEP_ALIVE == req_type)
+		if (Globals.REQ_KEEP_ALIVE == req_type)
 		{
 			if (test_check >= 3)
 			{
@@ -372,6 +432,9 @@ public class MessagesActivity extends BaseActivity implements RequestAdapterList
 			{
 				test_check++;
 				System.out.println("keep alive ok.");
+				
+				// keep-alive 결과가 정상이라면 메세지 업데이트.
+				refreshMessages();
 			}
 			else if (1 == code)
 			{
@@ -382,8 +445,51 @@ public class MessagesActivity extends BaseActivity implements RequestAdapterList
 				setResult(RESULT_CANCELED);
 				finish();
 			}
-		}		
-	}	
-	
+		}	
+		else if (Globals.REQ_GET_MESSAGES == req_type)
+		{
+			if (1 == code && null != messages)
+			{
+				db.open();
+				
+				for (Iterator<MessageItem> iterator = messages.iterator(); iterator.hasNext();)
+				{
+					MessageItem item = (MessageItem) iterator.next();
+					item.setPhoneNumber(phone_number);
+					
+					db.insertMessage(item);		// db에 추가.					
+					adapter.add(item);			// list adapter에 추가.
+				}
+				
+				db.close();
+				
+				// scroll to buttom.
+				if (0 < adapter.getCount())
+					messageList.setSelection(adapter.getCount() - 1);
+
+				if (0 < messages.size())
+				{
+					MessageItem lastItem = messages.lastElement();
+					if (null != lastItem)
+					{
+						updateLastMessageId(lastItem.getId());
+					}
+				}
+			}
+			else if (0 == code)
+			{
+				// test proc
+//				updateLastMessageId(1);
+			}
+		}
+		else if (Globals.REQ_UPDATE_LAST_MESSAGE_ID == req_type)
+		{
+			if (0 == code)
+				System.out.println("update last message id fail.");
+			else if (1 == code)
+				System.out.println("update last message id success.");
+		}
+	}
+
 
 }

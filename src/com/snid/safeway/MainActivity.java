@@ -1,6 +1,7 @@
 package com.snid.safeway;
 
 import java.io.IOException;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import android.content.Context;
@@ -117,7 +118,7 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 
 		    if (true == isRegisted)
 		    {
-		    	req_type = REQ_KEEP_ALIVE;
+		    	req_type = Globals.REQ_KEEP_ALIVE;
 				req.SendRegistrationKeepAlive(this, phone_number, reg_id);
 		    }
 		}
@@ -155,7 +156,7 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 			if (false == prog.isShowing()) prog.show();
 			
 			setProgressMessage(R.string.msg_request_regist_device_id);
-			req_type = REQ_DEVICE_REGISTRATION;
+			req_type = Globals.REQ_DEVICE_REGISTRATION;
 			req.SendDeviceRegistrationId(this, phone_number, reg_id);
 			return false;
 		}
@@ -423,7 +424,7 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 	}
 
 	@Override
-	public void onFinishRequest(int code, String message, String reason, int user_type)
+	public void onFinishRequest(int code, String message, String reason, int user_type, Vector<MessageItem> messages)
 	{
 		if (prog.isShowing()) prog.dismiss();
 		
@@ -433,7 +434,7 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 			return;
 		}
 		
-		if (REQ_DEVICE_REGISTRATION == req_type)
+		if (Globals.REQ_DEVICE_REGISTRATION == req_type)
 		{
 			if (0 == code || 1 == code)
 			{
@@ -447,7 +448,7 @@ public class MainActivity extends BaseActivity implements RequestAdapterListener
 				Utils.GetDefaultTool().ShowFinishDialog(context, R.string.msg_device_registration_fail);
 			}
 		}
-		else if (REQ_KEEP_ALIVE == req_type)
+		else if (Globals.REQ_KEEP_ALIVE == req_type)
 		{
 			// do not anything.
 			if (0 == code)

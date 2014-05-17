@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class MessageItem
 {
+	private int _id;
 	private String phone_number, sender_id, sender_number, message;
 	private Date receive_time;
 	public String getPhoneNumber() {
@@ -35,6 +36,12 @@ public class MessageItem
 	}
 	public void setReceiveTime(Date receive_time) {
 		this.receive_time = receive_time;
+	}
+	public int getId() {
+		return _id;
+	}
+	public void setId(int id) {
+		this._id = id;
 	}
 	
 	

@@ -63,6 +63,7 @@ public class GcmIntentService extends IntentService
                 
                 Log.i(TAG, "Received: " + extras.toString());
                 
+                /*
                 DBAdapter db = new DBAdapter(this);
                 
                 // add new message
@@ -77,13 +78,15 @@ public class GcmIntentService extends IntentService
                 db.insertMessage(new_msg);
                 
                 db.close();
-
+				*/
+                
                 /*
                  * 메세지 창이 떠있으면 리스트에 메세지 추가, 아니면 노티바에 표시
                  */
                 if (MessagesActivity.IsActive)
                 {
-                	MessagesActivity.AddNewMessage(new_msg);
+                	//MessagesActivity.AddNewMessage(new_msg);
+                	MessagesActivity.UpdateMessages();
                 	
                 	try
                 	{

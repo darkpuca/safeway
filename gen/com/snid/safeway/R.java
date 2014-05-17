@@ -444,6 +444,7 @@ containing a value of this type.
         public static final int msg_request_auth_check=0x7f07003a;
         public static final int msg_request_auth_number=0x7f070039;
         public static final int msg_request_fail=0x7f07003e;
+        public static final int msg_request_messages=0x7f070046;
         public static final int msg_request_regist_device_id=0x7f07003b;
         public static final int msg_request_success=0x7f07003d;
         public static final int msg_select_registration_type=0x7f070033;

@@ -1,5 +1,7 @@
 package com.snid.safeway;
 
+import java.util.Vector;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -60,7 +62,7 @@ implements OnClickListener, RequestAdapterListener
 			
 			if (false == prog.isShowing()) prog.show();
 			
-			req_type = REQ_SEND_SMS;
+			req_type = Globals.REQ_SEND_SMS;
 			setProgressMessage(R.string.msg_request_auth_number);
 			req.SendSMS(this, phone_number);
 
@@ -78,17 +80,17 @@ implements OnClickListener, RequestAdapterListener
 			if (false == prog.isShowing()) prog.show();
 			
 			setProgressMessage(R.string.msg_request_auth_check);
-			req_type = REQ_CHECK_AUTH;
+			req_type = Globals.REQ_CHECK_AUTH;
 			req.SendAuthNumber(this, phone_number, auth_number);
 		}
 	}
 
 	@Override
-	public void onFinishRequest(int code, String message, String reason, int user_type)
+	public void onFinishRequest(int code, String message, String reason, int user_type, Vector<MessageItem> messages)
 	{
 		if (prog.isShowing()) prog.dismiss();
 		
-		if (REQ_SEND_SMS == req_type)
+		if (Globals.REQ_SEND_SMS == req_type)
 		{
 			if (message.equalsIgnoreCase("done"))
 			{
@@ -104,7 +106,7 @@ implements OnClickListener, RequestAdapterListener
 				Utils.GetDefaultTool().ShowMessageDialog(this, R.string.msg_empty_auth_number);
 			}
 		}
-		else if (REQ_CHECK_AUTH == req_type)
+		else if (Globals.REQ_CHECK_AUTH == req_type)
 		{
 			if (Globals.RESPONSE_OK == code)
 			{

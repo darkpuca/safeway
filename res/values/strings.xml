@@ -45,7 +45,8 @@
     <string name="msg_exit_confirm">등하교천사 앱을 종료하시겠습니까?</string>
     <string name="msg_clear_messages_confirm">모든 메세지를 삭제하시겠습니까?</string>
     <string name="msg_delete_messages_confirm">선택한 메세지를 삭제하시겠습니까?</string>
-
+    <string name="msg_request_messages">메세지 정보를 업데이트 합니다.</string>
+    
     <string-array name="registration_types">
         <item>학부모</item>
         <item>학생</item>
