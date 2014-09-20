@@ -42,7 +42,6 @@ public class MessagesActivity extends BaseActivity implements RequestAdapterList
 	private Timer updateTimer;
 	private NotificationManager notiManager;
 	private String device_id, phone_number;
-	private int test_check = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -421,16 +420,9 @@ public class MessagesActivity extends BaseActivity implements RequestAdapterList
 		
 		if (Globals.REQ_KEEP_ALIVE == req_type)
 		{
-			if (test_check >= 3)
-			{
-//				code = 1;
-				test_check = 0;
-			}
-			
 			// do not anything.
 			if (0 == code)
 			{
-				test_check++;
 				System.out.println("keep alive ok.");
 				
 				// keep-alive 결과가 정상이라면 메세지 업데이트.
